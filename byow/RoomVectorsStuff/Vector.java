@@ -12,25 +12,43 @@ public class Vector {
         mag = Math.pow(Math.pow(x_dir, 2) + Math.pow(x_dir, 2), 0.5);
     }
     public boolean pointsRight() {
-        return (x_dir >= 0);
+        /**
+         * Check if points towards the right direction, otherwise return false
+         */
+        return (x_dir > 0);
     }
     public Vector add(Vector b) {
+        /**
+         * Perform vector addition by combining the x coordinates and the y coordinates
+         */
         return new Vector(x_dir + b.x_dir, y_dir + b.y_dir);
     }
 
     public Vector normalize() {
-        return new Vector(x_dir/mag, y_dir/mag);
+        /**
+         * Normalize the vectors by dividing by the magnitude
+         */
+        return new Vector(x_dir/getMagnitude(), y_dir/getMagnitude());
     }
 
     public double getMagnitude() {
+        /**
+         * Get magnitude of a vector
+         */
         return mag;
     }
 
     public double dotProduct(Vector b) {
+        /**
+         * Calculate the vector dot product between vectors
+         */
         return x_dir * b.x_dir + y_dir * b.y_dir;
     }
 
     public double projectTo(Vector b) {
-        return this.dotProduct(b)/b.mag;
+        /**
+         * Calculate the orthogonal projection onto another vector
+         */
+        return this.dotProduct(b)/b.getMagnitude();
     }
 }
