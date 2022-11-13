@@ -11,13 +11,19 @@ public class Vector {
         y_dir = y;
         mag = Math.pow(Math.pow(x_dir, 2) + Math.pow(x_dir, 2), 0.5);
     }
-
+    public boolean pointsRight() {
+        return (x_dir >= 0);
+    }
     public Vector add(Vector b) {
         return new Vector(x_dir + b.x_dir, y_dir + b.y_dir);
     }
 
     public Vector normalize() {
         return new Vector(x_dir/mag, y_dir/mag);
+    }
+
+    public double getMagnitude() {
+        return mag;
     }
 
     public double dotProduct(Vector b) {
