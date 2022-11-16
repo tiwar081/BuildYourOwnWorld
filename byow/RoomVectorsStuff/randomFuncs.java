@@ -1,20 +1,33 @@
 package byow.RoomVectorsStuff;
 import java.util.HashSet;
 import java.util.Random;
+
+import byow.Core.Engine;
 import byow.Core.RandomUtils;
+import byow.TileEngine.TETile;
 
 public class randomFuncs {
     public static int genRoomSize(Random r) {
-        int smallest = 1;
-        int numSizes = 5;
+        int smallest = Engine.MIN_ROOM_SIZE;
+        int numSizes = Engine.MAX_ROOM_SIZE - Engine.MIN_ROOM_SIZE;
         return RandomUtils.uniform(r, numSizes) + smallest;
     }
 
-    public static Room generateRoom(int space_dim_x, int space_dim_y) {
+    public static int[] genRoomPos(Random r, int length, int width) {
+        /**
+         * Generate a random valid room position
+         * Set proper bounds in random generation such that
+         * the room must be contained inside the world
+         * Might need Engine.WIDTH and Engine.HEIGHT
+         * Returns [xpos, ypos]
+         */
+
+    }
+    public static Room generateRoom(int x, int y, int length, int width) {
 
     }
 
-    public static void drawRoom(Room room) {
+    public static void drawRoom(Room room, TETile[][] world) {
 
     }
 }

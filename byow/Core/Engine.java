@@ -1,13 +1,26 @@
 package byow.Core;
 
+import byow.RoomVectorsStuff.ParseString;
+import byow.RoomVectorsStuff.Room;
+import byow.RoomVectorsStuff.randomFuncs;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+
+import java.util.ArrayList;
+import java.util.Random;
+
+import static byow.RoomVectorsStuff.randomFuncs.*;
 
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
+    public static final int MAX_ROOMS = 25;
+    public static final int ROOM_ATTEMPTS = 5;
+    public static final int MIN_ROOM_SIZE = 1;
+    public static final int MAX_ROOM_SIZE = 5;
+
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -47,6 +60,30 @@ public class Engine {
         // that works for many different input types.
 
         TETile[][] finalWorldFrame = null;
+        Random rand = new Random(ParseString.getSeed(input));
+        int room_length;
+        int room_width;
+        int room_xpos;
+        int room_ypos;
+        int[] pos = new int[2];
+        Room curr_room;
+        ArrayList<Room> allRooms = new ArrayList<>();
+
+        for (int i = 0; i < MAX_ROOMS; i++) {
+            room_width = genRoomSize(rand);
+            room_length = genRoomSize(rand);
+            for (int j = 0; j < ROOM_ATTEMPTS; j++) {
+                pos = genRoomPos(rand, room_length, room_width)
+                curr_room = generateRoom(pos[0], pos[1], room_length, room_width);
+                if (!curr_room.overlapsWith(allRooms)) {
+                    allRooms.add(curr_room);
+                    break;
+                }
+            }
+        }
+        for (Room r : allRooms) {
+            drawRoom(r, finalWorldFrame);
+        }
         return finalWorldFrame;
     }
 }

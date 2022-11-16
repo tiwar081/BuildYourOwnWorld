@@ -2,8 +2,7 @@ package byow.RoomVectorsStuff;
 
 import byow.Core.RandomUtils;
 
-import java.util.HashSet;
-import java.util.Random;
+import java.util.*;
 
 public class Room {
     // x and y position of center
@@ -104,7 +103,7 @@ public class Room {
 
         return (projection >= vectorBetweenRooms.getMagnitude());
     }
-    public boolean overlapsWith(Room[] b) {
+    public boolean overlapsWith(Collection<Room> b) {
         for (Room otherRoom : b) {
             if (overlapsWith(otherRoom)) {
                 return true;
