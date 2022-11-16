@@ -26,7 +26,6 @@ public class Room {
         leftVector = new Vector(-length/2, width/2);
         rightVector = new Vector(length/2, width/2);
     }
-
     public int xLeft() {
         return (int) (x_pos - (length - 1)/2);
     }
@@ -105,6 +104,13 @@ public class Room {
 
         return (projection >= vectorBetweenRooms.getMagnitude());
     }
-
+    public boolean overlapsWith(Room[] b) {
+        for (Room otherRoom : b) {
+            if (overlapsWith(otherRoom)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
