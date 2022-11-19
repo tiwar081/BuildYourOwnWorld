@@ -11,7 +11,7 @@ public class randomFuncs {
     }
 
     public static Room generateRoom(int space_dim_x, int space_dim_y) {
-
+        
     }
 
     public static void drawRoom(Room room) {
