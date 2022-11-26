@@ -1,5 +1,7 @@
 package byow.RoomVectorsStuff;
 
+import java.util.ArrayList;
+
 public class Vector {
     // X and Y direction for vector, and store magnitude of vectors
     private double x_dir;
@@ -17,6 +19,32 @@ public class Vector {
          */
         return (x_dir > 0);
     }
+    public ArrayList<Vector> surroundingVectors() {
+        ArrayList<Vector> output = new ArrayList<>();
+        for (int x = -1; x <= 1; x++) {
+            for (int y = -1; y <= 1; y++) {
+                if (x != 0 || y != 0) {
+                    output.add(add(new Vector(x, y)));
+                }
+            }
+        }
+        return output;
+    }
+    public void setXDirection(double x) {
+        x_dir = x;
+    }
+    public void setYDirection(double y) {
+        y_dir = y;
+    }
+    public double getX() {
+        return x_dir;
+    }
+    public double getY() {
+        return y_dir;
+    }
+    public Vector getCopy() {
+        return new Vector(x_dir, y_dir);
+    }
     public Vector add(Vector b) {
         /**
          * Perform vector addition by combining the x coordinates and the y coordinates
@@ -24,6 +52,12 @@ public class Vector {
         return new Vector(x_dir + b.x_dir, y_dir + b.y_dir);
     }
 
+    public Vector subtract(Vector b) {
+        /**
+         * Perform vector addition by combining the x coordinates and the y coordinates
+         */
+        return new Vector(x_dir - b.x_dir, y_dir - b.y_dir);
+    }
     public Vector normalize() {
         /**
          * Normalize the vectors by dividing by the magnitude

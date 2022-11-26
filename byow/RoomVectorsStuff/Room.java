@@ -51,7 +51,7 @@ public class Room {
          */
         return connectedRooms.contains(b);
     }
-    public int[] genHallwayTarget(Random rand) {
+    public Vector genHallwayTarget(Random rand) {
         /**
          * Generate a random position inside the room from which to start the hallway
          * Returns an integer array with [xpos, ypos]
@@ -59,24 +59,24 @@ public class Room {
         int cardinalDirection = RandomUtils.uniform(rand, 0, 4);
         int randomXDirection = RandomUtils.uniform(rand, xLeft(), xRight() + 1);
         int randomYDirection = RandomUtils.uniform(rand, yBottom(), yTop() + 1);
-        int[] hallwayTarget = {randomXDirection, randomYDirection};
+        Vector hallwayTarget = new Vector(randomXDirection, randomYDirection);
 
         switch (cardinalDirection) {
             case 0:
                 //North/Top Hallway
-                hallwayTarget[1] = yTop();
+                hallwayTarget.setYDirection(yTop());
                 break;
             case 1:
                 // East/Right Hallway
-                hallwayTarget[0] = xRight();
+                hallwayTarget.setXDirection(xRight());
                 break;
             case 2:
                 // South/Bottom Hallway
-                hallwayTarget[1] = yBottom();
+                hallwayTarget.setYDirection(yBottom());
                 break;
             case 3:
                 // West/Left Hallway
-                hallwayTarget[0] = xLeft();
+                hallwayTarget.setXDirection(xLeft());
                 break;
         }
         return hallwayTarget;
