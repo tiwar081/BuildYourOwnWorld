@@ -2,7 +2,6 @@ package byow.Core;
 
 import byow.RoomVectorsStuff.ParseString;
 import byow.RoomVectorsStuff.Room;
-import byow.RoomVectorsStuff.randomFuncs;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 
@@ -11,6 +10,7 @@ import java.util.HashSet;
 import java.util.Random;
 
 import static byow.RoomVectorsStuff.randomFuncs.*;
+import static byow.RoomVectorsStuff.HallwaysFuncs.*;
 
 public class Engine {
     TERenderer ter = new TERenderer();
@@ -29,6 +29,19 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
+        // Start Menu
+        TERenderer rend = new TERenderer();
+        rend.initialize(WIDTH, HEIGHT);
+        //drawStartMenu();
+
+        // Generate World from String Seed
+        long seed = randomSeed();
+        String input = "N" + seed + "S";
+        TETile[][] world = interactWithInputString(input);
+        rend.renderFrame(world);
+
+        // Move around in World
+        // Save World if needed
     }
 
     /**
@@ -62,7 +75,9 @@ public class Engine {
         // that works for many different input types.
 
         TETile[][] finalWorldFrame = null;
-        Random rand = new Random(ParseString.getSeed(input));
+        System.out.println(ParseString.getSeed(input));
+        long seed = ParseString.getSeed(input);
+        Random rand = new Random(seed);
         int room_length;
         int room_width;
         int room_xpos;
