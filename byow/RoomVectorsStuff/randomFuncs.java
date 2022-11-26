@@ -24,7 +24,7 @@ public class randomFuncs {
 
     }
     public static Room generateRoom(int x, int y, int length, int width) {
-
+        
     }
 
     public static void drawRoom(Room room, TETile[][] world) {
