@@ -1,11 +1,8 @@
 package byow.RoomVectorsStuff;
-<<<<<<< HEAD:byow/RoomVectorsStuff/usefulFuncs.java
-=======
+
 import java.util.ArrayList;
 import java.util.List;
->>>>>>> main:byow/RoomVectorsStuff/randomFuncs.java
 import java.util.Random;
-
 import byow.Core.Engine;
 import byow.Core.RandomUtils;
 import byow.TileEngine.TETile;
