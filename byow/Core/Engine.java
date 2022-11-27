@@ -27,6 +27,7 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
+
     }
 
     /**
@@ -50,6 +51,7 @@ public class Engine {
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
      */
+
     public TETile[][] interactWithInputString(String input) {
         // TODO: Fill out this method so that it run the engine using the input
         // passed in as an argument, and return a 2D tile representation of the
