@@ -142,6 +142,23 @@ public class TETile {
         int newValue = Math.min(255, Math.max(0, rawNewValue));
         return newValue;
     }
+    public static TETile intensityVariant(TETile t, double intensity) {
+        /**
+         * Change the color of a tile easily
+         * Author: Ayushmaan Aggarwal
+         */
+        if (intensity > 1 || intensity < 0) {
+            throw new IllegalArgumentException();
+        }
+        Color oldColor = t.textColor;
+        int newRed = (int) (oldColor.getRed() * intensity);
+        int newGreen = (int) (oldColor.getGreen() * intensity);
+        int newBlue = (int) (oldColor.getBlue() * intensity);
+
+        Color c = new Color(newRed, newGreen, newBlue);
+
+        return new TETile(t, c);
+    }
 
     /**
      * Converts the given 2D array to a String. Handy for debugging.
