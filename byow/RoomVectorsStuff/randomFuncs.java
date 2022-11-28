@@ -1,7 +1,5 @@
 package byow.RoomVectorsStuff;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import byow.Core.Engine;
@@ -45,27 +43,6 @@ public class randomFuncs {
         StdDraw.text(Engine.WIDTH / 2, Engine.HEIGHT * 2.5 / 5, "Load Game (L)");
         StdDraw.text(Engine.WIDTH / 2, Engine.HEIGHT * 2 / 5, "Quit (Q)");
 
-
-        //        //TODO: If the game is not over, display encouragement, and let the user know if they
-        //        // should be typing their answer or watching for the next round.
-        //        Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
-        //        StdDraw.setFont(fontSmall);
-        //        int height2 = this.height-1;
-        //        StdDraw.text(3, height2, "Round: ");
-        //        StdDraw.text(6, height2, ""+this.round);
-        //
-        //        if (!playerTurn) {
-        //            StdDraw.text(Engine.WIDTH / 2, height2, "Watch!");
-        //        } else {
-        //            StdDraw.text(Engine.WIDTH / 2, height2, "Type!");
-        //        }
-        //        StdDraw.text(Engine.WIDTH-6, height2, encorage);
-        //
-        //        StdDraw.text(0, height2-0.5, "_".repeat(this. * 4));
         StdDraw.show();
-    }
-
-    public static long randomSeed() {
-        return (long) RandomUtils.uniform(new Random(), 0, 1000000);
     }
 }
