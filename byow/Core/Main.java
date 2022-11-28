@@ -21,7 +21,7 @@ public class Main {
 //            engine.interactWithKeyboard();
 //        }
 
-        String input = "N937264S";
+        String input = "N123S";
         TETile[][] world = new Engine().interactWithInputString(input);
 
         TERenderer ter = new TERenderer();

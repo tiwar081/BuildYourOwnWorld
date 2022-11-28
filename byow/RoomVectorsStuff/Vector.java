@@ -6,12 +6,10 @@ public class Vector {
     // X and Y direction for vector, and store magnitude of vectors
     private double x_dir;
     private double y_dir;
-    private double mag;
 
     public Vector(double x, double y) {
         x_dir = x;
         y_dir = y;
-        mag = Math.pow(Math.pow(x_dir, 2) + Math.pow(x_dir, 2), 0.5);
     }
     public boolean pointsRight() {
         /**
@@ -23,7 +21,7 @@ public class Vector {
         ArrayList<Vector> output = new ArrayList<>();
         for (int x = -1; x <= 1; x++) {
             for (int y = -1; y <= 1; y++) {
-                if (x != 0 || y != 0) {
+                if (!(x == 0 && y == 0)) {
                     output.add(add(new Vector(x, y)));
                 }
             }
@@ -69,7 +67,7 @@ public class Vector {
         /**
          * Get magnitude of a vector
          */
-        return mag;
+         return Math.sqrt(Math.pow(x_dir, 2) + Math.pow(y_dir, 2));
     }
 
     public double dotProduct(Vector b) {
@@ -84,5 +82,8 @@ public class Vector {
          * Calculate the orthogonal projection onto another vector
          */
         return this.dotProduct(b)/b.getMagnitude();
+    }
+    public boolean equals(Vector b) {
+        return (getX() == b.getX() && getY() == b.getY());
     }
 }
