@@ -15,7 +15,7 @@ import static byow.RoomVectorsStuff.GameWorld.setTile;
 import static byow.RoomVectorsStuff.usefulFuncs.isValidPos;
 
 public class HallwaysFuncs {
-    public static Vector chooseNextHallwayTile(Random rand, Vector netDirection) {
+    public static Vector chooseNextHallwayTile(Random rand, Vector netDirection, Vector startPos) {
         // Find vertical and horizontal distances that need to be traveled
         int vertDistance = (int) netDirection.getY();
         int horzDistance = (int) netDirection.getX();
@@ -42,7 +42,7 @@ public class HallwaysFuncs {
 
 
         while (!startPos.equals(endPos)) {
-            startPos = startPos.add(chooseNextHallwayTile(rand, endPos.subtract(startPos)));
+            startPos = startPos.add(chooseNextHallwayTile(rand, endPos.subtract(startPos), startPos));
             setTile(startPos, Tileset.FLOOR, world);
             laidDownFloor.add(startPos.getCopy());
         }

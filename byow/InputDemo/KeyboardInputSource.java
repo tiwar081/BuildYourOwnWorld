@@ -5,12 +5,10 @@ package byow.InputDemo;
  */
 import edu.princeton.cs.algs4.StdDraw;
 
+import static byow.RoomVectorsStuff.DisplayFuncs.drawStartMenu;
+
 public class KeyboardInputSource implements InputSource {
     private static final boolean PRINT_TYPED_KEYS = false;
-    public KeyboardInputSource() {
-        StdDraw.text(0.3, 0.3, "press m to moo, q to quit");
-    }
-
     public char getNextKey() {
         while (true) {
             if (StdDraw.hasNextKeyTyped()) {
