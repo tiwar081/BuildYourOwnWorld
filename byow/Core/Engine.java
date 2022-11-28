@@ -7,6 +7,8 @@ import byow.RoomVectorsStuff.usefulFuncs;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdDraw;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,7 +26,7 @@ public class Engine {
     public static final int ROOM_ATTEMPTS = 5;
     public static final int MIN_ROOM_SIZE = 1;
     public static final int MAX_ROOM_SIZE = 5;
-    public static final int EXTRA_HALLWAYS = 10;
+    public static final int EXTRA_HALLWAYS = 0;
     public static final char[] validLetters = "sSnNlLqQ1234567890".toCharArray();
     public static final char[] terminalLetters = "sSlLqQ".toCharArray();
     public HashSet<Character> validLettersSet;

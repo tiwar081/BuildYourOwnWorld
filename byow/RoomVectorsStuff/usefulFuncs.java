@@ -55,11 +55,20 @@ public class usefulFuncs {
 
     //adds room to world
     public static void addRoom(Room room, TETile[][] world) {
+        for (int i = Math.max(0, room.xLeft() - 1); i <= Math.min(world.length - 1, room.xRight() + 1); i++) {
+            for (int j = Math.max(0, room.yBottom() - 1); j <= Math.min(world[0].length - 1, room.yTop() + 1); j++) {
+                world[i][j] = Tileset.WALL;
+            }
+        }
         for (int i = room.xLeft(); i <= room.xRight(); i++) {
             for (int j = room.yBottom(); j <= room.yTop(); j++) {
                 world[i][j] = Tileset.FLOOR;
             }
         }
+    }
+
+    public static boolean isValidPos(Vector pos, TETile[][] world) {
+        return (pos.getX() >= 0 && pos.getY() >= 0) && (pos.getX() < world.length && pos.getY() < world[0].length);
     }
 
     public static void drawStartMenu() {

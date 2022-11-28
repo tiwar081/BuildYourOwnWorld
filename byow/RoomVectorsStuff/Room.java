@@ -22,8 +22,8 @@ public class Room {
         length = l;
         width = w;
         // Need vectors to top left and top right for overlap calculation
-        leftVector = new Vector(-length/2, width/2);
-        rightVector = new Vector(length/2, width/2);
+        leftVector = new Vector(-length/2 - 1, width/2 + 1);
+        rightVector = new Vector(length/2 + 1, width/2 + 1);
     }
     public int xLeft() {
         return (int) (x_pos - (length - 1)/2);
@@ -87,19 +87,21 @@ public class Room {
          */
         return new Vector(b.x_pos - x_pos, b.y_pos - y_pos);
     }
+    public ArrayList<Vector> closestRooms(Collection<Room> b) {
+        // TODO: implement a closestRooms function to make hallway
+        // connection easier
+        return new ArrayList<>();
+    }
 
     public boolean overlapsWith(Room b) {
         /**
          * Check if a room overlaps with another room using vector calculations
          */
         Vector vectorBetweenRooms = vectorBetween(b);
-        Vector comparisonVector;
-        if (vectorBetweenRooms.pointsRight()) {
-            comparisonVector = rightVector.add(b.rightVector);
-        } else {
-            comparisonVector = leftVector.add(b.leftVector);
-        }
-        double projection = comparisonVector.projectTo(vectorBetweenRooms);
+        Vector comparisonVectorRight = rightVector.add(b.rightVector);
+        Vector comparisonVectorLeft = leftVector.add(b.leftVector);
+
+        double projection = Math.max(Math.abs(comparisonVectorRight.projectTo(vectorBetweenRooms)), Math.abs(comparisonVectorLeft.projectTo(vectorBetweenRooms)));
 
         return (projection >= vectorBetweenRooms.getMagnitude());
     }

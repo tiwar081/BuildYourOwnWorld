@@ -1,14 +1,18 @@
 package byow.RoomVectorsStuff;
 
 import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
+import edu.princeton.cs.algs4.Graph;
 
 import java.util.Collection;
+import static byow.RoomVectorsStuff.usefulFuncs.*;
 
 public class GameWorld {
     private Vector playerPosition;
     private Collection<Room> allRooms;
     private TETile[][] world;
     private TETile[][] interactingWorld;
+    private Graph floorGraph;
 
     public GameWorld(TETile[][] world, Collection<Room> allRooms) {
         this.allRooms = allRooms;
@@ -19,9 +23,20 @@ public class GameWorld {
     public void movePlayerIn(char inputDir) {
         Vector direction = convertToVector(inputDir);
         Vector newPlayerPosition = playerPosition.add(direction);
-        if (direction.getMagnitude() > 1 && checkValidPosition(newPlayerPosition)) {
-
+        if (isValidMove(newPlayerPosition)) {
+            setTile(playerPosition, getTile(playerPosition), interactingWorld);
+            setTile(newPlayerPosition, Tileset.AVATAR, interactingWorld);
+            playerPosition = newPlayerPosition;
         }
+    }
+    private boolean isValidMove(Vector pos) {
+        return !playerPosition.equals(pos) && isValidPos(pos, world) && getTile(pos)!=Tileset.WALL;
+    }
+    public static void setTile(Vector pos, TETile tile, TETile[][] world) {
+        world[(int) pos.getX()][(int) pos.getY()] = tile;
+    }
+    public TETile getTile(Vector pos) {
+        return world[(int) pos.getX()][(int) pos.getY()];
     }
     private Vector convertToVector(char inputDir) {
         switch (inputDir) {
@@ -40,10 +55,8 @@ public class GameWorld {
         }
         return new Vector(0, 0);
     }
-    private boolean checkValidPosition(Vector newPlayerPosition) {
-        //TODO: Check if the player will move into wall
-        // or other invalid position
-        return false;
+    public void generateGraph() {
+        //TODO: Generate a graph using the world instance variable
+        // idea just make each floor a vertex and connect it if touching
     }
-
 }
