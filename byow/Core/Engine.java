@@ -1,11 +1,14 @@
 package byow.Core;
 
+import byow.RoomVectorsStuff.InputHandling;
 import byow.RoomVectorsStuff.ParseString;
 import byow.RoomVectorsStuff.Room;
 import byow.RoomVectorsStuff.usefulFuncs;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import edu.princeton.cs.algs4.In;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -22,23 +25,51 @@ public class Engine {
     public static final int MIN_ROOM_SIZE = 1;
     public static final int MAX_ROOM_SIZE = 5;
     public static final int EXTRA_HALLWAYS = 10;
-
-
+    public static final char[] validLetters = "sSnNlLqQ1234567890".toCharArray();
+    public static final char[] terminalLetters = "sSlLqQ".toCharArray();
+    public HashSet<Character> validLettersSet;
+    public HashSet<Character> terminalLettersSet;
+    public Engine() {
+        for (char letter:validLetters) {
+            validLettersSet.add(letter);
+        }
+        for (char letter:terminalLetters) {
+            terminalLettersSet.add(letter);
+        }
+    }
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
+        //TODO: Add Keyboard interactivity
+        InputHandling ih = new InputHandling();
         // Start Menu
         TERenderer rend = new TERenderer();
         rend.initialize(WIDTH, HEIGHT);
-        //drawStartMenu();
+        drawStartMenu();
+
+        // Get user input
+        InputHandling inputH = new InputHandling();
+        String input = inputH.inputSeed(true, validLettersSet, terminalLettersSet);
+
 
         // Generate World from String Seed
-        long seed = randomSeed();
-        String input = "N" + seed + "S";
-        TETile[][] world = interactWithInputString(input);
-        rend.renderFrame(world);
+        switch (input.charAt(input.length() - 1)) {
+            case 's':
+            case 'S':
+                TETile[][] world = interactWithInputString(input);
+                rend.renderFrame(world);
+                break;
+            case 'l':
+            case 'L':
+                //TODO: Generate world from saved world
+                break;
+            case 'q':
+            case 'Q':
+                //TODO: Display End Screen
+                return;
+        }
 
         // Move around in World
         // Save World if needed
@@ -67,7 +98,7 @@ public class Engine {
      */
 
     public TETile[][] interactWithInputString(String input) {
-        // TODO: Fill out this method so that it run the engine using the input
+        // Fill out this method so that it run the engine using the input
         // passed in as an argument, and return a 2D tile representation of the
         // world that would have been drawn if the same inputs had been given
         // to interactWithKeyboard().
