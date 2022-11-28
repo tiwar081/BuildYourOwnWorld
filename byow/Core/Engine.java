@@ -69,7 +69,7 @@ public class Engine {
         int room_width;
         int room_xpos;
         int room_ypos;
-        int[] pos = new int[2];
+        double[] pos = new double[2];
         Room curr_room;
         ArrayList<Room> disconnectedRooms = new ArrayList<>();
         ArrayList<Room> connectedRooms = new ArrayList<>();
@@ -87,7 +87,7 @@ public class Engine {
         }
 
         for (Room r : disconnectedRooms) {
-            drawRoom(r, finalWorldFrame);
+            addRoom(r, finalWorldFrame);
         }
 
         // Move the first room over to the connected rooms

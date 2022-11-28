@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 import byow.Core.Engine;
 import byow.Core.RandomUtils;
+import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
@@ -15,7 +16,7 @@ public class usefulFuncs {
         return RandomUtils.uniform(r, numSizes) + smallest;
     }
 
-    public static int[] genRoomPos(Random r, int length, int width) {
+    public static double[] genRoomPos(Random r, int length, int width) {
         /**
          * Generate a random valid room position
          * Set proper bounds in random generation such that
@@ -23,15 +24,24 @@ public class usefulFuncs {
          * Might need Engine.WIDTH and Engine.HEIGHT
          * Returns [xpos, ypos]
          */
-        return new int[] {5};
+        double bottomRightx = (double) RandomUtils.uniform(r, 1, Engine.WIDTH - 1 - width);
+        double bottomRighty = (double) RandomUtils.uniform(r, 1, Engine.HEIGHT - 1 - length);
+
+        return new double[] {bottomRightx + (double) width/2, bottomRighty + (double) length/2};
     }
 
-    public static Room generateRoom(int x, int y, int length, int width) {
-        return new Room(0,0,0,0);
+    public static Room generateRoom(double x, double y, int length, int width) {
+        return new Room(x, y, length, width);
     }
 
-    public static void drawRoom(Room room, TETile[][] world) {
 
+    //adds room to world
+    public static void addRoom(Room room, TETile[][] world) {
+        for (int i = room.xLeft(); i <= room.xRight(); i++) {
+            for (int j = room.yBottom(); j <= room.yTop(); j++) {
+                world[i][j] = Tileset.FLOOR;
+            }
+        }
     }
 
     public static Vector chooseNextHallwayTile(Random rand, Vector netDirection) {
