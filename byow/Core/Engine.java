@@ -30,6 +30,8 @@ public class Engine {
     public HashSet<Character> validLettersSet;
     public HashSet<Character> terminalLettersSet;
     public Engine() {
+        validLettersSet = new HashSet<>();
+        terminalLettersSet = new HashSet<>();
         for (char letter:validLetters) {
             validLettersSet.add(letter);
         }
@@ -130,32 +132,32 @@ public class Engine {
         }
 
         // Move the first room over to the connected rooms
-        Room selectedRoom = getRandomRoom(rand, disconnectedRooms);
-        disconnectedRooms.remove(selectedRoom);
-        connectedRooms.add(selectedRoom);
-
-        while (disconnectedRooms.size() > 0) {
-            // While there are still disconnected rooms, select a random room from
-            // the connected rooms and the disconnected rooms and connect them
-            Room startRoom = getRandomRoom(rand, connectedRooms);
-            Room endRoom = getRandomRoom(rand, disconnectedRooms);
-
-            // Connect the rooms
-            drawHallway(rand, startRoom, endRoom, finalWorldFrame);
-            disconnectedRooms.remove(endRoom);
-            connectedRooms.add(endRoom);
-        }
-
-        for (int i = 0; i < EXTRA_HALLWAYS; i++) {
-            Room startRoom = getRandomRoom(rand, connectedRooms);
-            connectedRooms.remove(startRoom);
-
-            Room endRoom = getRandomRoom(rand, connectedRooms);
-            connectedRooms.add(startRoom);
-
-            // Connect the rooms
-            drawHallway(rand, startRoom, endRoom, finalWorldFrame);
-        }
+//        Room selectedRoom = getRandomRoom(rand, disconnectedRooms);
+//        disconnectedRooms.remove(selectedRoom);
+//        connectedRooms.add(selectedRoom);
+//
+//        while (disconnectedRooms.size() > 0) {
+//            // While there are still disconnected rooms, select a random room from
+//            // the connected rooms and the disconnected rooms and connect them
+//            Room startRoom = getRandomRoom(rand, connectedRooms);
+//            Room endRoom = getRandomRoom(rand, disconnectedRooms);
+//
+//            // Connect the rooms
+//            drawHallway(rand, startRoom, endRoom, finalWorldFrame);
+//            disconnectedRooms.remove(endRoom);
+//            connectedRooms.add(endRoom);
+//        }
+//
+//        for (int i = 0; i < EXTRA_HALLWAYS; i++) {
+//            Room startRoom = getRandomRoom(rand, connectedRooms);
+//            connectedRooms.remove(startRoom);
+//
+//            Room endRoom = getRandomRoom(rand, connectedRooms);
+//            connectedRooms.add(startRoom);
+//
+//            // Connect the rooms
+//            drawHallway(rand, startRoom, endRoom, finalWorldFrame);
+//        }
 
         return finalWorldFrame;
     }

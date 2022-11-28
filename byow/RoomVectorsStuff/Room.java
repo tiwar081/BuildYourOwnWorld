@@ -101,7 +101,7 @@ public class Room {
         }
         double projection = comparisonVector.projectTo(vectorBetweenRooms);
 
-        return (projection >= vectorBetweenRooms.getMagnitude());
+        return (projection + 1 >= vectorBetweenRooms.getMagnitude());
     }
     public boolean overlapsWith(Collection<Room> b) {
         for (Room otherRoom : b) {
