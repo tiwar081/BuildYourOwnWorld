@@ -63,22 +63,18 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
 
-        TETile[][] finalWorldFrame = null;
+        TETile[][] finalWorldFrame = emptyWorld();
         Random rand = new Random(ParseString.getSeed(input));
-        int room_length;
-        int room_width;
-        int room_xpos;
-        int room_ypos;
-        double[] pos = new double[2];
+        int[] room_dim;
+        double[] pos = new double[] {0.0, 0.0};
         Room curr_room;
         ArrayList<Room> disconnectedRooms = new ArrayList<>();
         ArrayList<Room> connectedRooms = new ArrayList<>();
         for (int i = 0; i < MAX_ROOMS; i++) {
-            room_width = genRoomSize(rand);
-            room_length = genRoomSize(rand);
+            room_dim = genRoomDim(rand);
             for (int j = 0; j < ROOM_ATTEMPTS; j++) {
-                pos = genRoomPos(rand, room_length, room_width);
-                curr_room = generateRoom(pos[0], pos[1], room_length, room_width);
+                pos = genRoomPos(rand, room_dim[0], room_dim[1]);
+                curr_room = new Room(pos[0], pos[1], room_dim[0], room_dim[1]);
                 if (!curr_room.overlapsWith(disconnectedRooms)) {
                     disconnectedRooms.add(curr_room);
                     break;
@@ -90,33 +86,33 @@ public class Engine {
             addRoom(r, finalWorldFrame);
         }
 
-        // Move the first room over to the connected rooms
-        Room selectedRoom = getRandomRoom(rand, disconnectedRooms);
-        disconnectedRooms.remove(selectedRoom);
-        connectedRooms.add(selectedRoom);
-
-        while (disconnectedRooms.size() > 0) {
-            // While there are still disconnected rooms, select a random room from
-            // the connected rooms and the disconnected rooms and connect them
-            Room startRoom = getRandomRoom(rand, connectedRooms);
-            Room endRoom = getRandomRoom(rand, disconnectedRooms);
-
-            // Connect the rooms
-            drawHallway(rand, startRoom, endRoom, finalWorldFrame);
-            disconnectedRooms.remove(endRoom);
-            connectedRooms.add(endRoom);
-        }
-
-        for (int i = 0; i < EXTRA_HALLWAYS; i++) {
-            Room startRoom = getRandomRoom(rand, connectedRooms);
-            connectedRooms.remove(startRoom);
-
-            Room endRoom = getRandomRoom(rand, connectedRooms);
-            connectedRooms.add(startRoom);
-
-            // Connect the rooms
-            drawHallway(rand, startRoom, endRoom, finalWorldFrame);
-        }
+//        // Move the first room over to the connected rooms
+//        Room selectedRoom = getRandomRoom(rand, disconnectedRooms);
+//        disconnectedRooms.remove(selectedRoom);
+//        connectedRooms.add(selectedRoom);
+//
+//        while (disconnectedRooms.size() > 0) {
+//            // While there are still disconnected rooms, select a random room from
+//            // the connected rooms and the disconnected rooms and connect them
+//            Room startRoom = getRandomRoom(rand, connectedRooms);
+//            Room endRoom = getRandomRoom(rand, disconnectedRooms);
+//
+//            // Connect the rooms
+//            drawHallway(rand, startRoom, endRoom, finalWorldFrame);
+//            disconnectedRooms.remove(endRoom);
+//            connectedRooms.add(endRoom);
+//        }
+//
+//        for (int i = 0; i < EXTRA_HALLWAYS; i++) {
+//            Room startRoom = getRandomRoom(rand, connectedRooms);
+//            connectedRooms.remove(startRoom);
+//
+//            Room endRoom = getRandomRoom(rand, connectedRooms);
+//            connectedRooms.add(startRoom);
+//
+//            // Connect the rooms
+//            drawHallway(rand, startRoom, endRoom, finalWorldFrame);
+//        }
 
         return finalWorldFrame;
     }

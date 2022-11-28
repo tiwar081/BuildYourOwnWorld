@@ -10,10 +10,28 @@ import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 
 public class usefulFuncs {
-    public static int genRoomSize(Random r) {
-        int smallest = Engine.MIN_ROOM_SIZE;
-        int numSizes = Engine.MAX_ROOM_SIZE - Engine.MIN_ROOM_SIZE;
-        return RandomUtils.uniform(r, numSizes) + smallest;
+    public static TETile[][] emptyWorld() {
+        TETile[][] emptyWorld = new TETile[Engine.WIDTH][Engine.HEIGHT];
+        for (int i = 0; i < Engine.WIDTH; i++) {
+            for (int j = 0; j < Engine.HEIGHT; j++) {
+                emptyWorld[i][j] = Tileset.NOTHING;
+            }
+        }
+
+        return emptyWorld;
+    }
+
+    public static int[] genRoomDim(Random r) {
+        int width = RandomUtils.uniform(r, Engine.MIN_ROOM_SIZE, Engine.MAX_ROOM_SIZE + 1);
+        int length = RandomUtils.uniform(r, Engine.MIN_ROOM_SIZE, Engine.MAX_ROOM_SIZE + 1);
+        if (width == 1) {
+            length = 1;
+        }
+        if (length == 1) {
+            width = 1;
+        }
+
+        return new int[] {width, length};
     }
 
     public static double[] genRoomPos(Random r, int length, int width) {
@@ -29,11 +47,6 @@ public class usefulFuncs {
 
         return new double[] {bottomRightx + (double) width/2, bottomRighty + (double) length/2};
     }
-
-    public static Room generateRoom(double x, double y, int length, int width) {
-        return new Room(x, y, length, width);
-    }
-
 
     //adds room to world
     public static void addRoom(Room room, TETile[][] world) {
@@ -62,7 +75,7 @@ public class usefulFuncs {
     }
     public static void drawHallway(Random rand, Room startRoom, Room endRoom, TETile[][] world) {
         Vector startPos = startRoom.genHallwayTarget(rand);
-        Vector endPos   = endRoom.genHallwayTarget(rand);
+        Vector endPos = endRoom.genHallwayTarget(rand);
         ArrayList<Vector> laidDownFloor = new ArrayList<>();
 
         while (!startPos.equals(endPos)) {

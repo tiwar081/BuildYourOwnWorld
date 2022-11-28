@@ -8,6 +8,6 @@ public class ParseString {
         int posStart = input.indexOf("N") + 1;
         int posEnd = input.indexOf("S");
         String seedString = input.substring(posStart, posEnd);
-        return Long.getLong(seedString);
+        return Long.valueOf(seedString);
     }
 }
