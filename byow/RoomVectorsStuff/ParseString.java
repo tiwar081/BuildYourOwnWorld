@@ -5,6 +5,7 @@ public class ParseString {
         /**
          * Get the seed by getting the start and end string
          */
+
         int posStart = input.indexOf("N") + 1;
         int posEnd = input.indexOf("S");
         String seedString = input.substring(posStart, posEnd);
