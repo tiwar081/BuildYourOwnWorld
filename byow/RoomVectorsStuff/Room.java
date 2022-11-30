@@ -87,11 +87,6 @@ public class Room {
          */
         return new Vector(b.x_pos - x_pos, b.y_pos - y_pos);
     }
-    public ArrayList<Vector> closestRooms(Collection<Room> b) {
-        // TODO: implement a closestRooms function to make hallway
-        // connection easier
-        return new ArrayList<>();
-    }
 
     public boolean overlapsWith(Room b) {
         /**

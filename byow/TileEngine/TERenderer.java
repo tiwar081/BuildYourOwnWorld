@@ -87,10 +87,13 @@ public class TERenderer {
      * @param world the 2D TETile[][] array to render
      */
     public void renderFrame(TETile[][] world) {
+        renderFrame(world, "");
+    }
+    public void renderFrame(TETile[][] world, String textHUD) {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
-        StdDraw.clear(new Color(0, 0, 0));
-        renderHUD();
+        StdDraw.clear(new Color(41, 46, 73));
+        renderHUD(textHUD);
         for (int x = 0; x < numXTiles; x += 1) {
             for (int y = 0; y < numYTiles; y += 1) {
                 if (world[x][y] == null) {
@@ -120,10 +123,12 @@ public class TERenderer {
         }
         StdDraw.show();
     }
-    private void renderHUD() {
-        StdDraw.setPenColor(Color.GRAY);
-        StdDraw.setFont(new Font("Monaco", Font.BOLD, 32 ));
-        StdDraw.text(width - 5, height - 2, "Some Tile");
-        StdDraw.setFont(new Font("Monaco", Font.BOLD, TILE_SIZE - 2));
+    private void renderHUD(String tetile) {
+        if (tetile.length() > 0) {
+            StdDraw.setPenColor(Color.WHITE);
+            StdDraw.setFont(new Font("Monaco", Font.BOLD, 32 ));
+            StdDraw.textRight(width, height - 2, tetile);
+            StdDraw.setFont(new Font("Monaco", Font.BOLD, TILE_SIZE - 2));
+        }
     }
 }

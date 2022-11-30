@@ -5,6 +5,7 @@ import byow.Core.RandomUtils;
 import byow.InputDemo.InputSource;
 import byow.InputDemo.KeyboardInputSource;
 import byow.TileEngine.TERenderer;
+import edu.princeton.cs.algs4.StdDraw;
 
 import java.util.Collection;
 import java.util.Random;
@@ -61,5 +62,10 @@ public class InputHandling {
         }
         return input;
     }
+    public double[] getKeyboardPos() {
+        double[] output = {StdDraw.mouseX(), StdDraw.mouseY()};
+        return output;
+    }
+
 }
 

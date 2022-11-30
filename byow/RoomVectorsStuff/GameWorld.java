@@ -18,7 +18,6 @@ public class GameWorld {
     private TETile[][] interactingWorld;
     private int[][] graphMap;
     private Graph floorGraphAStar;
-    private Graph floorGraphVision;
     private boolean viewEntireWorld = false;
     private int visionDepth = 8;
     private HashSet<Vector> vectorsToAllTiles = new HashSet<>();
@@ -91,14 +90,11 @@ public class GameWorld {
     public TETile getInteractiveTile(Vector pos) {
         return interactingWorld[(int) pos.getX()][(int) pos.getY()];
     }
-    private int getGraphPos(Vector pos) {
-        return graphMap[(int) pos.getX()][(int) pos.getY()];
-    }
-    private Vector getGraphVector(int x) {
-        return new Vector(x%world[0].length, x/world[0].length);
-    }
     public TETile getTile(int x, int y) {
         return world[x][y];
+    }
+    public TETile getInteractiveTile(int x, int y) {
+        return interactingWorld[x][y];
     }
     private Vector convertToVector(char inputDir) {
         switch (inputDir) {
@@ -122,7 +118,9 @@ public class GameWorld {
     public void generateGraph() {
         /** Generate a graph using the world instance variable
          *  make each floor a vertex and connect it if touching
+         *  NOT COMPLETE - MIGHT HAVE SOME BUG
          */
+        //TODO: Fix potential bugs??
         floorGraphAStar = new Graph(countTiles());
         for (int i = 0; i < world.length - 1; i++) {
             for (int j = 0; j < world[0].length; j++) {
@@ -181,5 +179,8 @@ public class GameWorld {
     }
     private Vector relativeToAbsoluteVector(Vector relVector) {
         return relVector.add(playerPosition);
+    }
+    public String getTileName(double[] pos) {
+        return getInteractiveTile((int) pos[0], (int) pos[1]).description();
     }
 }

@@ -17,7 +17,7 @@ public class Engine {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 75;
-    public static final int yOffSet = 3;
+    public static final int yOffSet = 2;
     public static final int MAX_ROOMS = 50;
     public static final int ROOM_ATTEMPTS = 5;
     public static final int MIN_ROOM_SIZE = 1;
@@ -25,7 +25,7 @@ public class Engine {
     public static final int EXTRA_HALLWAYS = 0;
     public static final boolean verbose = false;
     public static final char[] validSeedLetters = "sSnNlLRrqQ1234567890".toCharArray();
-    public static final char[] validLetters = "aAwWsSdDtT:".toCharArray();
+    public static final char[] validLetters = "aAwWsSdDtT:rR".toCharArray();
     public static final char[] terminalSeedLetters = "sSlLqQrR".toCharArray();
     public static final char terminalLetter = 'Q';
     public HashSet<Character> validSeedLettersSet = new HashSet<>();
@@ -47,7 +47,6 @@ public class Engine {
      * including inputs from the main menu.
      */
     public void interactWithKeyboard() {
-        //TODO: Add Keyboard interactivity
         InputHandling ih = new InputHandling();
         // Start Menu
         TERenderer rend = new TERenderer();
@@ -95,9 +94,13 @@ public class Engine {
         // Move around in World
         char playerInput = ih.inputPlayer(validLettersSet);
         while (playerInput != terminalLetter) {
-            input += playerInput;
-            gworld.movePlayerIn(playerInput);
-            rend.renderFrame(gworld.getWorld());
+            if (playerInput != 'R') {
+                input += playerInput;
+                gworld.movePlayerIn(playerInput);
+                rend.renderFrame(gworld.getWorld());
+            } else {
+                rend.renderFrame(gworld.getWorld(), gworld.getTileName(ih.getKeyboardPos()));
+            }
             playerInput = ih.inputPlayer(validLettersSet);
         }
         //TODO: Implement Save World Feature
@@ -135,7 +138,7 @@ public class Engine {
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
-
+        //TODO: Enable interactivity with player inputs example N123SWASD should move WASD
         TETile[][] finalWorldFrame = emptyWorld();
         Random rand = new Random(ParseString.getSeed(input));
         int[] room_dim;
