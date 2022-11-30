@@ -8,8 +8,7 @@ import edu.princeton.cs.algs4.StdDraw;
 
 import java.util.*;
 
-import static byow.RoomVectorsStuff.DisplayFuncs.drawRandomSeed;
-import static byow.RoomVectorsStuff.DisplayFuncs.drawStartMenu;
+import static byow.RoomVectorsStuff.DisplayFuncs.*;
 import static byow.RoomVectorsStuff.usefulFuncs.*;
 import static byow.RoomVectorsStuff.HallwaysFuncs.*;
 
@@ -17,21 +16,21 @@ public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
-    public static final int HEIGHT = 80;
+    public static final int HEIGHT = 75;
+    public static final int yOffSet = 3;
     public static final int MAX_ROOMS = 50;
     public static final int ROOM_ATTEMPTS = 5;
     public static final int MIN_ROOM_SIZE = 1;
     public static final int MAX_ROOM_SIZE = 5;
     public static final int EXTRA_HALLWAYS = 0;
-    public static final boolean verbose = true;
+    public static final boolean verbose = false;
     public static final char[] validSeedLetters = "sSnNlLRrqQ1234567890".toCharArray();
-    public static final char[] validLetters = "aAwWsSdDqQ".toCharArray();
+    public static final char[] validLetters = "aAwWsSdDtT:".toCharArray();
     public static final char[] terminalSeedLetters = "sSlLqQrR".toCharArray();
-    public static final char[] terminalLetters = "qQ".toCharArray();
+    public static final char terminalLetter = 'Q';
     public HashSet<Character> validSeedLettersSet = new HashSet<>();
     public HashSet<Character> validLettersSet = new HashSet<>();
     public HashSet<Character> terminalSeedLettersSet = new HashSet<>();
-    public HashSet<Character> terminalLettersSet = new HashSet<>();
     public Engine() {
         for (char letter:validSeedLetters) {
             validSeedLettersSet.add(letter);
@@ -41,9 +40,6 @@ public class Engine {
         }
         for (char letter:terminalSeedLetters) {
             terminalSeedLettersSet.add(letter);
-        }
-        for (char letter:terminalLetters) {
-            terminalLettersSet.add(letter);
         }
     }
     /**
@@ -55,12 +51,12 @@ public class Engine {
         InputHandling ih = new InputHandling();
         // Start Menu
         TERenderer rend = new TERenderer();
-        rend.initialize(WIDTH, HEIGHT);
-        drawStartMenu();
+        rend.initialize(WIDTH, HEIGHT + yOffSet);
+        drawStartMenu(rend);
 
         // Get user input
         InputHandling inputH = new InputHandling();
-        String input = inputH.inputSeed(true, validSeedLettersSet, terminalSeedLettersSet);
+        String input = inputH.inputSeed(true, validSeedLettersSet, terminalSeedLettersSet, rend);
 
 
         // Generate World from String Seed
@@ -73,8 +69,8 @@ public class Engine {
                 break;
             case 'r':
             case 'R':
-                input = inputH.inputSeed(false, validSeedLettersSet, terminalSeedLettersSet);
-                drawRandomSeed(input);
+                input = inputH.inputSeed(false, validSeedLettersSet, terminalSeedLettersSet, rend);
+                drawRandomSeed(rend, input);
                 inputH.anyInput();
                 break;
             case 'l':
@@ -83,25 +79,30 @@ public class Engine {
                 return;
             case 'q':
             case 'Q':
-                //TODO: Display End Screen
+                if (verbose) {
+                    System.out.println("DEBUG: Ending Game");
+                }
+                rend.initialize(WIDTH, HEIGHT + yOffSet);
+                drawEndScreen(rend);
                 return;
         }
         rand = new Random(ParseString.getSeed(input) + 1);
         world = interactWithInputString(input);
         gworld = new GameWorld(rand, world, getRooms(input));
-        gworld.generateGraph();
-        rend.initialize(WIDTH, HEIGHT);
-        rend.renderFrame(world);
+        rend.initialize(WIDTH, HEIGHT + yOffSet, 0, -yOffSet);
+        rend.renderFrame(gworld.getWorld());
 
         // Move around in World
         char playerInput = ih.inputPlayer(validLettersSet);
-        while (!terminalLettersSet.contains(playerInput)) {
-            //TODO: implement move around in world
+        while (playerInput != terminalLetter) {
+            input += playerInput;
             gworld.movePlayerIn(playerInput);
             rend.renderFrame(gworld.getWorld());
             playerInput = ih.inputPlayer(validLettersSet);
         }
-        // Save World if needed
+        //TODO: Implement Save World Feature
+        rend.initialize(WIDTH, HEIGHT + yOffSet);
+        drawEndScreen(rend);
     }
 
     /**

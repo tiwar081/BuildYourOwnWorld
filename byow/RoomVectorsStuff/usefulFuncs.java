@@ -62,6 +62,8 @@ public class usefulFuncs {
         }
     }
     public static void addRoomWalls(Room room, TETile[][] world) {
+        //TODO: Make this code more clean
+        // Don't need to draw out every single one of these tiles
         for (int i = Math.max(0, room.xLeft() - 1); i <= Math.min(world.length - 1, room.xRight() + 1); i++) {
             for (int j = Math.max(0, room.yBottom() - 1); j <= Math.min(world[0].length - 1, room.yTop() + 1); j++) {
                 world[i][j] = Tileset.WALL;

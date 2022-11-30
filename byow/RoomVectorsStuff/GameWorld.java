@@ -6,28 +6,51 @@ import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.algs4.Graph;
 
-import java.util.Collection;
-import java.util.Random;
+import java.util.*;
 
 import static byow.RoomVectorsStuff.usefulFuncs.*;
 
 public class GameWorld {
     private Vector playerPosition;
     private Collection<Room> allRooms;
+    private TETile[][] blankWorld;
     private TETile[][] world;
     private TETile[][] interactingWorld;
     private int[][] graphMap;
-    private Graph floorGraph;
+    private Graph floorGraphAStar;
+    private Graph floorGraphVision;
+    private boolean viewEntireWorld = false;
+    private int visionDepth = 8;
+    private HashSet<Vector> vectorsToAllTiles = new HashSet<>();
 
     public GameWorld(Random rand, TETile[][] world, Collection<Room> allRooms) {
         this.allRooms = allRooms;
+        blankWorld = emptyWorld();
         this.world = world;
         interactingWorld = TETile.copyOf(world);
         graphMap = new int[world.length][world[0].length];
         generatePlayerStartPosition(rand);
+        generateGraph();
+        setVectorsToAllTiles();
     }
     public TETile[][] getWorld() {
-        return interactingWorld;
+
+        if (viewEntireWorld) {
+            return interactingWorld;
+        }
+        TETile[][] smallerWorld = TETile.copyOf(blankWorld);
+
+        HashMap<Vector, Double> visibleTiles = findVisibleTiles();
+        Vector pos;
+        for (Vector relPos:visibleTiles.keySet()) {
+            pos = relativeToAbsoluteVector(relPos);
+            TETile dimmedTile = TETile.intensityVariant(getInteractiveTile(pos), 1-visibleTiles.get(relPos)/visionDepth);
+            setTile(pos, dimmedTile, smallerWorld);
+        }
+        return smallerWorld;
+    }
+    private void toggleWorldView() {
+        viewEntireWorld = !viewEntireWorld;
     }
     public void generatePlayerStartPosition(Random rand) {
         Object[] roomList = allRooms.toArray();
@@ -65,6 +88,15 @@ public class GameWorld {
     public TETile getTile(Vector pos) {
         return world[(int) pos.getX()][(int) pos.getY()];
     }
+    public TETile getInteractiveTile(Vector pos) {
+        return interactingWorld[(int) pos.getX()][(int) pos.getY()];
+    }
+    private int getGraphPos(Vector pos) {
+        return graphMap[(int) pos.getX()][(int) pos.getY()];
+    }
+    private Vector getGraphVector(int x) {
+        return new Vector(x%world[0].length, x/world[0].length);
+    }
     public TETile getTile(int x, int y) {
         return world[x][y];
     }
@@ -82,6 +114,8 @@ public class GameWorld {
             case 'a':
             case 'A':
                 return new Vector(-1, 0);
+            case 'T':
+                toggleWorldView();
         }
         return new Vector(0, 0);
     }
@@ -89,32 +123,63 @@ public class GameWorld {
         /** Generate a graph using the world instance variable
          *  make each floor a vertex and connect it if touching
          */
-        floorGraph = new Graph(countFlooring());
+        floorGraphAStar = new Graph(countTiles());
         for (int i = 0; i < world.length - 1; i++) {
             for (int j = 0; j < world[0].length; j++) {
-                if(getTile(i, j) == Tileset.FLOOR && getTile(i + 1, j) == Tileset.FLOOR) {
-                    floorGraph.addEdge(graphMap[i][j], graphMap[i + 1][j]);
+                if(shouldConnectTiles(i, j, i + 1, j, false)) {
+                    floorGraphAStar.addEdge(graphMap[i][j], graphMap[i + 1][j]);
                 }
             }
         }
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length - 1; j++) {
-                if(getTile(i, j) == Tileset.FLOOR && getTile(i, j + 1) == Tileset.FLOOR) {
-                    floorGraph.addEdge(graphMap[i][j], graphMap[i][j + 1]);
+                if(shouldConnectTiles(i, j, i, j + 1, false)) {
+                    floorGraphAStar.addEdge(graphMap[i][j], graphMap[i][j + 1]);
                 }
             }
         }
     }
-    private int countFlooring() {
-        int count = 0;
+    private int countTiles() {
+        int graphCount = 0;
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length; j++) {
-                if(getTile(i, j) == Tileset.FLOOR) {
-                    graphMap[i][j] = count;
-                    count++;
-                }
+                graphMap[i][j] = graphCount;
+                graphCount++;
             }
         }
-        return count;
+        return graphCount;
+    }
+    private boolean shouldConnectTiles(int x1, int y1, int x2, int y2, boolean includeWalls) {
+        if (includeWalls) {
+            return getTile(x1, y1) == Tileset.FLOOR || getTile(x2, y2) == Tileset.FLOOR;
+        }
+        return getTile(x1, y1) == Tileset.FLOOR && getTile(x2, y2) == Tileset.FLOOR;
+    }
+    private HashMap<Vector, Double> findVisibleTiles() {
+        HashMap<Vector, Double> output = new HashMap<>();
+        PriorityQueue<Vector> pq = getRelativeVectorsToAllTiles();
+        Vector currVector = pq.remove();
+        while (currVector.getMagnitude() <= visionDepth) {
+            output.put(currVector, currVector.getMagnitude());
+            currVector = pq.remove();
+        }
+        return output;
+    }
+    private void setVectorsToAllTiles() {
+        for (int x = 0; x < world.length; x++) {
+            for (int y = 0; y < world[0].length; y++) {
+                vectorsToAllTiles.add(new Vector(x, y));
+            }
+        }
+    }
+    private PriorityQueue<Vector> getRelativeVectorsToAllTiles() {
+        PriorityQueue<Vector> relVectors = new PriorityQueue<>(new VectorMagComparator());
+        for (Vector v:vectorsToAllTiles) {
+            relVectors.add(v.subtract(playerPosition));
+        }
+        return relVectors;
+    }
+    private Vector relativeToAbsoluteVector(Vector relVector) {
+        return relVector.add(playerPosition);
     }
 }

@@ -4,6 +4,7 @@ import byow.Core.Engine;
 import byow.Core.RandomUtils;
 import byow.InputDemo.InputSource;
 import byow.InputDemo.KeyboardInputSource;
+import byow.TileEngine.TERenderer;
 
 import java.util.Collection;
 import java.util.Random;
@@ -15,7 +16,7 @@ public class InputHandling {
     private static final int RANDOM = 1;
     private static final int STRING = 10;
 
-    public String inputSeed(boolean useKeyboard, Collection<Character> validLetters, Collection<Character> terminalLetters) {
+    public String inputSeed(boolean useKeyboard, Collection<Character> validLetters, Collection<Character> terminalLetters, TERenderer rend) {
         String seed = "";
 
         if (useKeyboard) {
@@ -31,7 +32,7 @@ public class InputHandling {
                     if (Engine.verbose) {
                         System.out.println(seed);
                     }
-                    drawSeed(seed.substring(1));
+                    drawSeed(rend, seed.substring(1));
                 }
             }
         } else {
@@ -51,6 +52,12 @@ public class InputHandling {
         char input = inputSource.getNextKey();
         while (!validLetters.contains(input)) {
             input = inputSource.getNextKey();
+        }
+        if (input == ':') {
+            input = inputSource.getNextKey();
+            if (input != 'Q') {
+                return inputPlayer(validLetters);
+            }
         }
         return input;
     }

@@ -44,7 +44,13 @@ public class TETile {
         this.description = description;
         this.filepath = filepath;
     }
-
+    public TETile(Color backgroundColor) {
+        this.character = '.';
+        this.textColor = backgroundColor;
+        this.backgroundColor = backgroundColor;
+        this.description = "";
+        this.filepath = null;
+    }
     /**
      * Constructor without filepath. In this case, filepath will be null, so when drawing, we
      * will not even try to draw an image, and will instead use the provided character and colors.
@@ -69,7 +75,9 @@ public class TETile {
     public TETile(TETile t, Color textColor) {
         this(t.character, textColor, t.backgroundColor, t.description, t.filepath);
     }
-
+    public TETile(TETile t, Color textColor, Color backgroundColor) {
+        this(t.character, textColor, backgroundColor, t.description, t.filepath);
+    }
 
     /**
      * Draws the tile to the screen at location x, y. If a valid filepath is provided,
@@ -150,14 +158,18 @@ public class TETile {
         if (intensity > 1 || intensity < 0) {
             throw new IllegalArgumentException();
         }
+        Color oldColorBack = t.backgroundColor;
         Color oldColor = t.textColor;
+        int newRedBack = (int) (oldColorBack.getRed() * intensity);
+        int newGreenBack = (int) (oldColorBack.getGreen() * intensity);
+        int newBlueBack = (int) (oldColorBack.getBlue() * intensity);
         int newRed = (int) (oldColor.getRed() * intensity);
         int newGreen = (int) (oldColor.getGreen() * intensity);
         int newBlue = (int) (oldColor.getBlue() * intensity);
 
         Color c = new Color(newRed, newGreen, newBlue);
-
-        return new TETile(t, c);
+        Color cBack = new Color(newRedBack, newGreenBack, newBlueBack);
+        return new TETile(t, c, cBack);
     }
 
     /**
