@@ -20,6 +20,7 @@ public class GameWorld {
     private Graph floorGraphAStar;
     private boolean viewEntireWorld = false;
     private int visionDepth = 8;
+    private HashSet<Vector> playerVisibleVectors = new HashSet<>();
     private HashSet<Vector> vectorsToAllTiles = new HashSet<>();
 
     public GameWorld(Random rand, TETile[][] world, Collection<Room> allRooms) {
@@ -30,7 +31,7 @@ public class GameWorld {
         graphMap = new int[world.length][world[0].length];
         generatePlayerStartPosition(rand);
         generateGraph();
-        setVectorsToAllTiles();
+        generateVisibleVectors();
     }
     public TETile[][] getWorld() {
 
@@ -40,10 +41,8 @@ public class GameWorld {
         TETile[][] smallerWorld = TETile.copyOf(blankWorld);
 
         HashMap<Vector, Double> visibleTiles = findVisibleTiles();
-        Vector pos;
-        for (Vector relPos:visibleTiles.keySet()) {
-            pos = relativeToAbsoluteVector(relPos);
-            TETile dimmedTile = TETile.intensityVariant(getInteractiveTile(pos), 1-visibleTiles.get(relPos)/visionDepth);
+        for (Vector pos:visibleTiles.keySet()) {
+            TETile dimmedTile = TETile.intensityVariant(getInteractiveTile(pos), 1-visibleTiles.get(pos)/visionDepth);
             setTile(pos, dimmedTile, smallerWorld);
         }
         return smallerWorld;
@@ -155,32 +154,28 @@ public class GameWorld {
     }
     private HashMap<Vector, Double> findVisibleTiles() {
         HashMap<Vector, Double> output = new HashMap<>();
-        PriorityQueue<Vector> pq = getRelativeVectorsToAllTiles();
-        Vector currVector = pq.remove();
-        while (currVector.getMagnitude() <= visionDepth) {
-            output.put(currVector, currVector.getMagnitude());
-            currVector = pq.remove();
+        Vector currentVector;
+        for (Vector v:playerVisibleVectors) {
+            currentVector = v.add(playerPosition);
+            if (isValidPos(currentVector, world)) {
+                output.put(currentVector.getCopy(), v.getMagnitude());
+            }
         }
         return output;
     }
-    private void setVectorsToAllTiles() {
-        for (int x = 0; x < world.length; x++) {
-            for (int y = 0; y < world[0].length; y++) {
-                vectorsToAllTiles.add(new Vector(x, y));
-            }
-        }
-    }
-    private PriorityQueue<Vector> getRelativeVectorsToAllTiles() {
-        PriorityQueue<Vector> relVectors = new PriorityQueue<>(new VectorMagComparator());
-        for (Vector v:vectorsToAllTiles) {
-            relVectors.add(v.subtract(playerPosition));
-        }
-        return relVectors;
-    }
-    private Vector relativeToAbsoluteVector(Vector relVector) {
-        return relVector.add(playerPosition);
-    }
     public String getTileName(double[] pos) {
         return getInteractiveTile((int) pos[0], (int) pos[1]).description();
+    }
+    private void generateVisibleVectors() {
+        playerVisibleVectors = new HashSet<>();
+        Vector tileVector = new Vector(0,0);
+        for (int i = -visionDepth; i < visionDepth; i++) {
+            for (int j = -visionDepth; j < visionDepth; j++) {
+                tileVector = new Vector(i, j);
+                if (tileVector.getMagnitude() < visionDepth) {
+                    playerVisibleVectors.add(tileVector.getCopy());
+                }
+            }
+        }
     }
 }
