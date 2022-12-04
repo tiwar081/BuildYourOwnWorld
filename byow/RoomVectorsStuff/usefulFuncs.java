@@ -47,40 +47,31 @@ public class usefulFuncs {
          * Might need Engine.WIDTH and Engine.HEIGHT
          * Returns [xpos, ypos]
          */
-        double bottomRightx = (double) RandomUtils.uniform(r, 1, Engine.WIDTH - 1 - width);
-        double bottomRighty = (double) RandomUtils.uniform(r, 1, Engine.HEIGHT - 1 - length);
+        double bottomRightx = (double) RandomUtils.uniform(r, 1.5, Engine.WIDTH - 1 - width);
+        double bottomRighty = (double) RandomUtils.uniform(r, 1.5, Engine.HEIGHT - 1 - length);
 
         return new double[] {bottomRightx + (double) width/2, bottomRighty + (double) length/2};
     }
 
     //adds room to world
     public static void addRoom(Room room, TETile[][] world) {
+        for (int i = room.xLeft(); i <= room.xRight(); i++) {
+            for (int j = room.yBottom(); j <= room.yTop(); j++) {
+                world[i][j] = Tileset.ROOM_FLOOR;
+            }
+        }
+    }
+    public static void addRoomWalls(Room room, TETile[][] world) {
+        //TODO: Make this code more clean
+        // Don't need to draw out every single one of these tiles
         for (int i = Math.max(0, room.xLeft() - 1); i <= Math.min(world.length - 1, room.xRight() + 1); i++) {
             for (int j = Math.max(0, room.yBottom() - 1); j <= Math.min(world[0].length - 1, room.yTop() + 1); j++) {
                 world[i][j] = Tileset.WALL;
-            }
-        }
-        for (int i = room.xLeft(); i <= room.xRight(); i++) {
-            for (int j = room.yBottom(); j <= room.yTop(); j++) {
-                world[i][j] = Tileset.FLOOR;
             }
         }
     }
 
     public static boolean isValidPos(Vector pos, TETile[][] world) {
         return (pos.getX() >= 0 && pos.getY() >= 0) && (pos.getX() < world.length && pos.getY() < world[0].length);
-    }
-
-    public static void drawStartMenu() {
-        StdDraw.clear(Color.BLACK);
-        StdDraw.setPenColor(Color.WHITE);
-        Font fontBig = new Font("Monaco", Font.BOLD, 30);
-        StdDraw.setFont(fontBig);
-        StdDraw.text(Engine.WIDTH / 2, Engine.HEIGHT * 4 / 5, "61B: THE GAME");
-        StdDraw.text(Engine.WIDTH / 2, Engine.HEIGHT * 3 / 5, "New Game (N)");
-        StdDraw.text(Engine.WIDTH / 2, Engine.HEIGHT * 2.5 / 5, "Load Game (L)");
-        StdDraw.text(Engine.WIDTH / 2, Engine.HEIGHT * 2 / 5, "Quit (Q)");
-
-        StdDraw.show();
     }
 }

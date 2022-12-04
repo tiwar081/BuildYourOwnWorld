@@ -1,9 +1,12 @@
 package byow.TileEngine;
 
+import byow.Core.Engine;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.Color;
 import java.awt.Font;
+
+import static byow.RoomVectorsStuff.DisplayFuncs.gradient;
 
 /**
  * Utility class for rendering tiles. You do not need to modify this file. You're welcome
@@ -84,9 +87,13 @@ public class TERenderer {
      * @param world the 2D TETile[][] array to render
      */
     public void renderFrame(TETile[][] world) {
+        renderFrame(world, "");
+    }
+    public void renderFrame(TETile[][] world, String textHUD) {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
-        StdDraw.clear(new Color(0, 0, 0));
+        StdDraw.clear(new Color(41, 46, 73));
+        renderHUD(textHUD);
         for (int x = 0; x < numXTiles; x += 1) {
             for (int y = 0; y < numYTiles; y += 1) {
                 if (world[x][y] == null) {
@@ -97,5 +104,31 @@ public class TERenderer {
             }
         }
         StdDraw.show();
+    }
+    public void renderGradient() {
+        int numXTiles = width;
+        int numYTiles = height;
+        Color a = new Color(83, 105, 118);
+        Color b = new Color(41, 46, 73);
+        TETile coloredTile;
+        StdDraw.clear(new Color(0, 0, 0));
+
+        for (int x = 0; x < numXTiles; x += 1) {
+            for (int y = 0; y < numYTiles; y += 1) {
+                double percent = (double)(x + y)/(numXTiles + numYTiles);
+                coloredTile = new TETile(gradient(a, b, percent));
+                System.out.println(percent);
+                coloredTile.draw(x + xOffset, y + yOffset);
+            }
+        }
+        StdDraw.show();
+    }
+    private void renderHUD(String tetile) {
+        if (tetile.length() > 0) {
+            StdDraw.setPenColor(Color.WHITE);
+            StdDraw.setFont(new Font("Monaco", Font.BOLD, 32 ));
+            StdDraw.textRight(width, height - 2, tetile);
+            StdDraw.setFont(new Font("Monaco", Font.BOLD, TILE_SIZE - 2));
+        }
     }
 }
