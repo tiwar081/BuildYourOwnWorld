@@ -45,16 +45,16 @@ public class ShortestPath {
         }
     }
 
-    public Integer getNextMove() {
+    public Vector getNextMove() {
         return getPath().get(1);
     }
 
-    public ArrayList<Integer> getPath() {
+    public ArrayList<Vector> getPath() {
         int currnode = end;
-        ArrayList<Integer> path = new ArrayList<>();
+        ArrayList<Vector> path = new ArrayList<>();
 
         while(currnode != start) {
-            path.add(0, currnode);
+            path.add(0, usefulFuncs.intToVector(currnode));
             currnode = predecessorEdge.get(currnode);
         }
 
