@@ -39,9 +39,8 @@ public class ShortestPath {
         int currNode = start;
         PQ.add(currNode);
         while (currNode != end) {
-            PQ.poll();
             relaxOutgoingEdges(currNode);
-            currNode = PQ.peek();
+            currNode = PQ.remove();
         }
     }
 
