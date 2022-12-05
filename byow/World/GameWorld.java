@@ -3,6 +3,7 @@ package byow.World;
 import byow.Core.Engine;
 import byow.Core.RandomUtils;
 import byow.RoomVectorsStuff.Room;
+import byow.RoomVectorsStuff.ShortestPath;
 import byow.RoomVectorsStuff.Vector;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
@@ -63,6 +64,10 @@ public class GameWorld {
         if (viewEntireWorld) {
             TETile[][] astarworld = TETile.copyOf(interactingWorld);
             //TODO: MODIFY astarworld
+            ShortestPath sh = new ShortestPath(getVertex(keyPosition), getVertex(playerPosition), floorGraphAStar);
+            for (Vector pos:sh.getPath()) {
+                setTile(pos, Tileset.FLOWER, astarworld);
+            }
             return astarworld;
         }
         TETile[][] smallerWorld = TETile.copyOf(blankWorld);
@@ -142,6 +147,9 @@ public class GameWorld {
                 toggleWorldView();
         }
         return new Vector(0, 0);
+    }
+    private int getVertex(Vector pos) {
+        return graphMap[(int) pos.getX()][(int) pos.getY()];
     }
     public void generateGraph() {
         /** Generate a graph using the world instance variable
