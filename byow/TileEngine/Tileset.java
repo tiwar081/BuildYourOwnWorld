@@ -30,6 +30,10 @@ public class Tileset {
     public static final TETile FLOWER = new TETile('❀', Color.magenta, Color.pink, "flower");
     public static final TETile LOCKED_DOOR = new TETile('█', Color.orange, Color.black,
             "locked door", true);
+    public static final TETile GOLDEN_FLOOR = new TETile('·', Color.orange.brighter(), Color.orange.darker(),
+            "golden floor");
+    public static final TETile KEY_FLOOR = new TETile('K', Color.orange.brighter(), Color.orange.darker(),
+            "key");
     public static final TETile UNLOCKED_DOOR = new TETile('▢', Color.orange, Color.black,
             "unlocked door");
     public static final TETile SAND = new TETile('▒', Color.yellow, Color.black, "sand");

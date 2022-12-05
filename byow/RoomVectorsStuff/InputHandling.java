@@ -65,7 +65,7 @@ public class InputHandling {
         return input;
     }
     public double[] getKeyboardPos() {
-        double[] output = {StdDraw.mouseX(), StdDraw.mouseY()};
+        double[] output = {StdDraw.mouseX(), StdDraw.mouseY() + 2};
         return output;
     }
 

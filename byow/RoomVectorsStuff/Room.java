@@ -81,6 +81,27 @@ public class Room {
         }
         return hallwayTarget;
     }
+    public HashSet<Vector> wallPositions() {
+        /**
+         * Generate a random position inside the room from which to start the hallway
+         * Returns an integer array with [xpos, ypos]
+         */
+        HashSet<Vector> wallPositions = new HashSet<>();
+        // Top Row
+        for (int x = xLeft(); x <= xRight(); x++) {
+            wallPositions.add(new Vector(x, yTop() + 1));
+            wallPositions.add(new Vector(x, yBottom() - 1));
+        }
+        for (int y = yBottom(); y <= yTop(); y++) {
+            wallPositions.add(new Vector(xLeft() - 1, y));
+            wallPositions.add(new Vector(xRight() + 1, y));
+        }
+        wallPositions.add(new Vector(xLeft(), yBottom()));
+        wallPositions.add(new Vector(xRight(), yBottom()));
+        wallPositions.add(new Vector(xLeft(), yTop()));
+        wallPositions.add(new Vector(xRight(), yTop()));
+        return wallPositions;
+    }
     private Vector vectorBetween(Room b) {
         /**
          * Calculate the vector between the centers of the current room and room b
