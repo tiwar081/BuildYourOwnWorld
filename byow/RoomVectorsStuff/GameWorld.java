@@ -18,10 +18,12 @@ public class GameWorld {
     private TETile[][] interactingWorld;
     private int[][] graphMap;
     private Graph floorGraphAStar;
+    private HashMap<Integer, Vector> vertexToPos = new HashMap<>();
     private boolean viewEntireWorld = false;
     private int visionDepth = 8;
     private HashSet<Vector> playerVisibleVectors = new HashSet<>();
     private HashSet<Vector> vectorsToAllTiles = new HashSet<>();
+
 
     public GameWorld(Random rand, TETile[][] world, Collection<Room> allRooms) {
         this.allRooms = allRooms;
@@ -36,7 +38,9 @@ public class GameWorld {
     public TETile[][] getWorld() {
 
         if (viewEntireWorld) {
-            return interactingWorld;
+            TETile[][] astarworld = TETile.copyOf(interactingWorld);
+            //TODO: MODIFY astarworld
+            return astarworld;
         }
         TETile[][] smallerWorld = TETile.copyOf(blankWorld);
 
@@ -141,6 +145,7 @@ public class GameWorld {
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length; j++) {
                 graphMap[i][j] = graphCount;
+                vertexToPos.put(graphCount, new Vector(i, j));
                 graphCount++;
             }
         }
