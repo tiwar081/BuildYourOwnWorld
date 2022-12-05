@@ -1,2 +1,5 @@
-package byow.World;public class Goblin {
+package byow.World;
+
+public class Goblin {
+    //TODO
 }
