@@ -63,6 +63,9 @@ public class Vector {
         return new Vector(x_dir/getMagnitude(), y_dir/getMagnitude());
     }
 
+    public Vector scale(double factor) {
+        return new Vector(x_dir * factor, y_dir * factor);
+    }
     public double getMagnitude() {
         /**
          * Get magnitude of a vector
@@ -85,5 +88,8 @@ public class Vector {
     }
     public boolean equals(Vector b) {
         return (getX() == b.getX() && getY() == b.getY());
+    }
+    public String toString() {
+        return "<" + x_dir + ", " + y_dir + ">";
     }
 }

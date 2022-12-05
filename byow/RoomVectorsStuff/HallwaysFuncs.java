@@ -1,17 +1,14 @@
 package byow.RoomVectorsStuff;
 
-import byow.Core.Engine;
 import byow.Core.RandomUtils;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
-import edu.princeton.cs.algs4.StdDraw;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static byow.RoomVectorsStuff.GameWorld.setTile;
+import static byow.World.GameWorld.setTile;
 import static byow.RoomVectorsStuff.usefulFuncs.isValidPos;
 
 public class HallwaysFuncs {

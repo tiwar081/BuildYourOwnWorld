@@ -3,8 +3,8 @@ package byow.Core;
 import byow.RoomVectorsStuff.*;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.StdDraw;
+import byow.World.GameWorld;
+import byow.World.SaveWorld;
 
 import java.util.*;
 
@@ -75,7 +75,8 @@ public class Engine {
             case 'l':
             case 'L':
                 //TODO: Generate world from saved world
-                return;
+                input = SaveWorld.readWorld();
+                break;
             case 'q':
             case 'Q':
                 if (verbose) {
@@ -85,9 +86,7 @@ public class Engine {
                 drawEndScreen(rend);
                 return;
         }
-        rand = new Random(ParseString.getSeed(input) + 1);
-        world = interactWithInputString(input);
-        gworld = new GameWorld(rand, world, getRooms(input));
+        gworld = interactWithInputStringGworld(input);
         rend.initialize(WIDTH, HEIGHT + yOffSet, 0, -yOffSet);
         rend.renderFrame(gworld.getWorld());
 
@@ -95,7 +94,6 @@ public class Engine {
         char playerInput = ih.inputPlayer(validLettersSet);
         while (playerInput != terminalLetter) {
             if (playerInput != 'R') {
-                input += playerInput;
                 gworld.movePlayerIn(playerInput);
                 rend.renderFrame(gworld.getWorld());
             } else {
@@ -106,6 +104,7 @@ public class Engine {
         //TODO: Implement Save World Feature
         rend.initialize(WIDTH, HEIGHT + yOffSet);
         drawEndScreen(rend);
+        SaveWorld.saveWorld(gworld.getPlayerInput());
     }
 
     /**
@@ -141,6 +140,7 @@ public class Engine {
         //TODO: Enable interactivity with player inputs example N123SWASD should move WASD
         TETile[][] finalWorldFrame = emptyWorld();
         Random rand = new Random(ParseString.getSeed(input));
+        char[] everyPlayerInput = ParseString.getPlayerInput(input);
         int[] room_dim;
         double[] pos = new double[] {0.0, 0.0};
         Room curr_room;
@@ -194,7 +194,76 @@ public class Engine {
         for (Room r : connectedRooms) {
             addRoom(r, finalWorldFrame);
         }
-        return finalWorldFrame;
+
+        GameWorld gworld = new GameWorld(rand, finalWorldFrame, connectedRooms, input);
+        for (char playerInput:everyPlayerInput) {
+            gworld.movePlayerIn(playerInput);
+        }
+        return gworld.getWorld();
+    }
+    public GameWorld interactWithInputStringGworld(String input) {
+        TETile[][] finalWorldFrame = emptyWorld();
+        Random rand = new Random(ParseString.getSeed(input));
+        char[] everyPlayerInput = ParseString.getPlayerInput(input);
+        int[] room_dim;
+        double[] pos;
+        Room curr_room;
+        ArrayList<Room> disconnectedRooms = new ArrayList<>();
+        ArrayList<Room> connectedRooms = new ArrayList<>();
+        for (int i = 0; i < MAX_ROOMS; i++) {
+            room_dim = genRoomDim(rand);
+            for (int j = 0; j < ROOM_ATTEMPTS; j++) {
+                pos = genRoomPos(rand, room_dim[0], room_dim[1]);
+                curr_room = new Room(pos[0], pos[1], room_dim[0], room_dim[1]);
+                if (!curr_room.overlapsWith(disconnectedRooms)) {
+                    disconnectedRooms.add(curr_room);
+                    System.out.println(curr_room.xLeft() + " " + curr_room.yBottom());
+                    break;
+                }
+            }
+        }
+
+        for (Room r : disconnectedRooms) {
+            addRoom(r, finalWorldFrame);
+            addRoomWalls(r, finalWorldFrame);
+        }
+
+        // Move the first room over to the connected rooms
+        Room selectedRoom = getRandomRoom(rand, disconnectedRooms);
+        disconnectedRooms.remove(selectedRoom);
+        connectedRooms.add(selectedRoom);
+
+        while (disconnectedRooms.size() > 0) {
+            // While there are still disconnected rooms, select a random room from
+            // the connected rooms and the disconnected rooms and connect them
+            Room startRoom = getRandomRoom(rand, connectedRooms);
+            Room endRoom = getRandomRoom(rand, disconnectedRooms);
+
+            // Connect the rooms
+            drawHallway(rand, startRoom, endRoom, finalWorldFrame);
+            disconnectedRooms.remove(endRoom);
+            connectedRooms.add(endRoom);
+        }
+
+        for (int i = 0; i < EXTRA_HALLWAYS; i++) {
+            Room startRoom = getRandomRoom(rand, connectedRooms);
+            connectedRooms.remove(startRoom);
+
+            Room endRoom = getRandomRoom(rand, connectedRooms);
+            connectedRooms.add(startRoom);
+
+            // Connect the rooms
+            drawHallway(rand, startRoom, endRoom, finalWorldFrame);
+        }
+        for (Room r : connectedRooms) {
+            addRoom(r, finalWorldFrame);
+        }
+
+        GameWorld gworld = new GameWorld(rand, finalWorldFrame, connectedRooms, input);
+        for (char playerInput:everyPlayerInput) {
+            gworld.movePlayerIn(playerInput);
+        }
+        return gworld;
     }
     public ArrayList<Room> getRooms(String input) {
         // Fill out this method so that it run the engine using the input
@@ -221,6 +290,8 @@ public class Engine {
                 }
             }
         }
+
+
         return output;
     }
 }

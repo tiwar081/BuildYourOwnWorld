@@ -26,10 +26,12 @@ public class InputHandling {
                 System.out.println("DEBUG: Waiting for Input");
             }
             char lastInput = 'N';
-            while (!terminalLetters.contains(lastInput)) {
+            while (seed != "N" && !terminalLetters.contains(lastInput)) {
                 lastInput = inputSource.getNextKey();
                 if (validLetters.contains(lastInput)) {
-                    seed += lastInput;
+                    if (seed + lastInput != "NS") {
+                        seed += lastInput;
+                    }
                     if (Engine.verbose) {
                         System.out.println(seed);
                     }

@@ -27,6 +27,7 @@ public class TETile {
     private final Color backgroundColor;
     private final String description;
     private final String filepath;
+    private boolean blocksPlayer;
 
     /**
      * Full constructor for TETile objects.
@@ -37,12 +38,13 @@ public class TETile {
      * @param filepath Full path to image to be used for this tile. Must be correct size (16x16)
      */
     public TETile(char character, Color textColor, Color backgroundColor, String description,
-                  String filepath) {
+                  String filepath, boolean blocksPlayer) {
         this.character = character;
         this.textColor = textColor;
         this.backgroundColor = backgroundColor;
         this.description = description;
         this.filepath = filepath;
+        this.blocksPlayer = blocksPlayer;
     }
     public TETile(Color backgroundColor) {
         this.character = '.';
@@ -50,6 +52,7 @@ public class TETile {
         this.backgroundColor = backgroundColor;
         this.description = "";
         this.filepath = null;
+        this.blocksPlayer = false;
     }
     /**
      * Constructor without filepath. In this case, filepath will be null, so when drawing, we
@@ -65,18 +68,26 @@ public class TETile {
         this.backgroundColor = backgroundColor;
         this.description = description;
         this.filepath = null;
+        this.blocksPlayer = false;
     }
-
+    public TETile(char character, Color textColor, Color backgroundColor, String description, boolean blocksPlayer) {
+        this.character = character;
+        this.textColor = textColor;
+        this.backgroundColor = backgroundColor;
+        this.description = description;
+        this.filepath = null;
+        this.blocksPlayer = blocksPlayer;
+    }
     /**
      * Creates a copy of TETile t, except with given textColor.
      * @param t tile to copy
      * @param textColor foreground color for tile copy
      */
     public TETile(TETile t, Color textColor) {
-        this(t.character, textColor, t.backgroundColor, t.description, t.filepath);
+        this(t.character, textColor, t.backgroundColor, t.description, t.filepath, t.blocksPlayer);
     }
     public TETile(TETile t, Color textColor, Color backgroundColor) {
-        this(t.character, textColor, backgroundColor, t.description, t.filepath);
+        this(t.character, textColor, backgroundColor, t.description, t.filepath, t.blocksPlayer);
     }
 
     /**
@@ -217,5 +228,8 @@ public class TETile {
         }
 
         return copy;
+    }
+    public boolean isBlocksPlayer() {
+        return blocksPlayer;
     }
 }
