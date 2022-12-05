@@ -74,4 +74,10 @@ public class usefulFuncs {
     public static boolean isValidPos(Vector pos, TETile[][] world) {
         return (pos.getX() >= 0 && pos.getY() >= 0) && (pos.getX() < world.length && pos.getY() < world[0].length);
     }
+
+    public static Vector intToVector(int v) {
+        int x = v % Engine.WIDTH;
+        int y = (v - x)/Engine.WIDTH;
+        return new Vector(x, y);
+    }
 }
