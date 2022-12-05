@@ -150,6 +150,7 @@ public class GameWorld {
          */
         //TODO: Fix potential bugs??
         floorGraphAStar = new Graph(countTiles());
+        //Vertical Connections
         for (int i = 0; i < world.length - 1; i++) {
             for (int j = 0; j < world[0].length; j++) {
                 if(shouldConnectTiles(i, j, i + 1, j, false)) {
@@ -157,6 +158,7 @@ public class GameWorld {
                 }
             }
         }
+        //Horizontal Connections
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length - 1; j++) {
                 if(shouldConnectTiles(i, j, i, j + 1, false)) {
