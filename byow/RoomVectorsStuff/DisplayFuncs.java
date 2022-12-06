@@ -59,6 +59,18 @@ public class DisplayFuncs {
 
         StdDraw.show();
     }
+
+    public static void drawWinScreen(TERenderer rend) {
+        StdDraw.clear(Color.BLACK);
+        rend.renderGradient();
+        StdDraw.setPenColor(Color.WHITE);
+        Font fontBig = new Font("Monaco", Font.BOLD, 30);
+        StdDraw.setFont(fontBig);
+        StdDraw.text(Engine.WIDTH / 2, Engine.HEIGHT * 4 / 5, "You WON!");
+        StdDraw.text(Engine.WIDTH / 2, Engine.HEIGHT * 3 / 5, "See you soon!");
+
+        StdDraw.show();
+    }
     public static void drawEndScreen(TERenderer rend) {
         StdDraw.clear(Color.BLACK);
         rend.renderGradient();

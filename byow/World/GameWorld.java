@@ -28,6 +28,7 @@ public class GameWorld {
     private Graph floorGraphAStar;
     private HashMap<Integer, Vector> vertexToPos = new HashMap<>();
     private boolean viewEntireWorld = false;
+    private boolean viewPath = false;
     private int visionDepth = 5;
     private HashSet<Vector> playerVisibleVectors = new HashSet<>();
     private HashSet<Vector> vectorsToAllTiles = new HashSet<>();
@@ -62,14 +63,17 @@ public class GameWorld {
     }
     private void unlockFinalRoom() {
         addRoomUnlockedDoors(finalRoom, world);
+        addRoomUnlockedDoors(finalRoom, interactingWorld);
     }
     public TETile[][] getWorld() {
 
         if (viewEntireWorld) {
+            if (!viewPath) {
+                return interactingWorld;
+            }
             TETile[][] astarworld = TETile.copyOf(interactingWorld);
             //TODO: MODIFY astarworld
-            ShortestPath sh = new ShortestPath(getVertex(keyPosition), getVertex(playerPosition),   floorGraphAStar);
-            for (int pos:sh.getPath()) {
+            for (int pos:getGoblinPath()) {
                 Vector path = vertexToPos.get(pos);
                 setTile(path, Tileset.FLOWER, astarworld);
             }
@@ -87,16 +91,20 @@ public class GameWorld {
     private void toggleWorldView() {
         viewEntireWorld = !viewEntireWorld;
     }
+    private void togglePathView() {
+        viewPath = !viewPath;
+    }
     public void generatePlayerStartPosition(Random rand) {
         Room playerRoom = roomIterator.next();
         playerPosition = playerRoom.genHallwayTarget(rand);
         setTile(playerPosition, Tileset.AVATAR, interactingWorld);
     }
-    public void movePlayerIn(char inputDir) {
+    public boolean movePlayerIn(char inputDir) {
         if (Engine.verbose) {
             System.out.println("DEBUG: Trying to move to " + inputDir);
         }
         tryPickingUpKey(inputDir);
+
         Vector direction = convertToVector(inputDir);
         Vector newPlayerPosition = playerPosition.add(direction);
         if (isValidMove(newPlayerPosition)) {
@@ -109,12 +117,25 @@ public class GameWorld {
                 System.out.println("DEBUG: Successfully moved " + inputDir);
             }
         }
-
+        return hasPlayerWon();
+    }
+    private boolean hasPlayerWon() {
+        if (pickedKeyUp) {
+            if (playerPosition.getX() >= finalRoom.xLeft() &&
+                    playerPosition.getX() <= finalRoom.xRight() &&
+                    playerPosition.getY() >= finalRoom.yBottom() &&
+                    playerPosition.getY() <= finalRoom.yTop()) {
+                return true;
+            }
+        }
+        return false;
     }
     private void tryPickingUpKey(char input) {
         if (input == 'E') {
             if (playerPosition.equals(keyPosition)) {
                 setInteractingWorldTile(playerPosition, Tileset.NO_KEY_FLOOR);
+                setTile(playerPosition, Tileset.NO_KEY_FLOOR, world);
+                setTile(playerPosition, Tileset.AVATAR, interactingWorld);
                 pickedKeyUp = true;
                 unlockFinalRoom();
             }
@@ -162,6 +183,9 @@ public class GameWorld {
                 return new Vector(-1, 0);
             case 'T':
                 toggleWorldView();
+                break;
+            case 'F':
+                togglePathView();
         }
         return new Vector(0, 0);
     }
@@ -268,5 +292,8 @@ public class GameWorld {
             return a;
         }
         return b;
+    }
+    public HashSet<Integer> getGoblinPath() {
+        return new HashSet<>();
     }
 }

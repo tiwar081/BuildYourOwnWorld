@@ -18,11 +18,11 @@ import java.awt.Color;
 
 public class Tileset {
     public static final TETile AVATAR = new TETile('@', Color.white, Color.blue, "you");
-    public static final TETile WALL = new TETile('#', new Color(216, 128, 128), Color.darkGray,
+    public static final TETile WALL = new TETile(' ', new Color(216, 128, 128), new Color(117, 0, 103),
             "wall", true);
     public static final TETile FLOOR = new TETile('·', new Color(128, 192, 128), Color.black,
             "floor");
-    public static final TETile ROOM_FLOOR = new TETile('·', new Color(128, 192, 128), Color.darkGray.darker(),
+    public static final TETile ROOM_FLOOR = new TETile('·', new Color(128, 192, 128), Color.black.brighter(),
             "rooom floor");
     public static final TETile NOTHING = new TETile(' ', Color.black, Color.black, "nothing", true);
     public static final TETile GRASS = new TETile('"', Color.green, Color.black, "grass");
@@ -31,7 +31,7 @@ public class Tileset {
     public static final TETile LOCKED_DOOR = new TETile('█', Color.orange, Color.black,
             "locked door", true);
     public static final TETile GOLDEN_FLOOR = new TETile('·', Color.orange.brighter(), Color.orange.darker(),
-            "golden floor");
+            "endgame");
     public static final TETile KEY_FLOOR = new TETile('K', Color.orange.brighter(), Color.orange.darker(),
             "key");
     public static final TETile NO_KEY_FLOOR = new TETile(' ', Color.orange.brighter(), Color.orange.darker(),

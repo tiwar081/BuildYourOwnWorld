@@ -25,7 +25,7 @@ public class Engine {
     public static final int EXTRA_HALLWAYS = 0;
     public static final boolean verbose = false;
     public static final char[] validSeedLetters = "sSnNlLRrqQ1234567890".toCharArray();
-    public static final char[] validLetters = "aAwWsSdDtT:rReE".toCharArray();
+    public static final char[] validLetters = "aAwWsSdDtT:rReEfF".toCharArray();
     public static final char[] terminalSeedLetters = "sSlLqQrR".toCharArray();
     public static final char terminalLetter = 'Q';
     public HashSet<Character> validSeedLettersSet = new HashSet<>();
@@ -94,7 +94,11 @@ public class Engine {
         char playerInput = ih.inputPlayer(validLettersSet);
         while (playerInput != terminalLetter) {
             if (playerInput != 'R') {
-                gworld.movePlayerIn(playerInput);
+                if (gworld.movePlayerIn(playerInput)) {
+                    rend.initialize(WIDTH, HEIGHT + yOffSet);
+                    drawWinScreen(rend);
+                    return;
+                }
                 rend.renderFrame(gworld.getWorld());
             } else {
                 rend.renderFrame(gworld.getWorld(), gworld.getTileName(ih.getKeyboardPos()));
