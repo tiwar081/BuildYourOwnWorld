@@ -2,12 +2,12 @@ package byow.World;
 
 import byow.Core.Engine;
 import byow.Core.RandomUtils;
+import byow.RoomVectorsStuff.Graph;
 import byow.RoomVectorsStuff.Room;
 import byow.RoomVectorsStuff.ShortestPath;
 import byow.RoomVectorsStuff.Vector;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
-import edu.princeton.cs.algs4.Graph;
 
 import java.util.*;
 
@@ -30,6 +30,7 @@ public class GameWorld {
     private int visionDepth = 5;
     private HashSet<Vector> playerVisibleVectors = new HashSet<>();
     private HashSet<Vector> vectorsToAllTiles = new HashSet<>();
+    private HashSet<TETile> floorTiles = new HashSet<>();
 
 
     public GameWorld(Random rand, TETile[][] world, Collection<Room> allRooms, String input) {
@@ -49,6 +50,8 @@ public class GameWorld {
         generatePlayerStartPosition(rand);
         generateGraph();
         generateVisibleVectors();
+        floorTiles.add(Tileset.ROOM_FLOOR);
+        floorTiles.add(Tileset.FLOOR);
     }
     public String getPlayerInput() {
         return playerInput;
@@ -64,9 +67,10 @@ public class GameWorld {
         if (viewEntireWorld) {
             TETile[][] astarworld = TETile.copyOf(interactingWorld);
             //TODO: MODIFY astarworld
-            ShortestPath sh = new ShortestPath(getVertex(keyPosition), getVertex(playerPosition), floorGraphAStar);
-            for (Vector pos:sh.getPath()) {
-                setTile(pos, Tileset.FLOWER, astarworld);
+            ShortestPath sh = new ShortestPath(getVertex(keyPosition), getVertex(playerPosition),   floorGraphAStar);
+            for (int pos:sh.getPath()) {
+                Vector path = vertexToPos.get(pos);
+                setTile(path, Tileset.FLOWER, astarworld);
             }
             return astarworld;
         }
@@ -91,7 +95,6 @@ public class GameWorld {
         if (Engine.verbose) {
             System.out.println("DEBUG: Trying to move to " + inputDir);
         }
-        System.out.println("");
         Vector direction = convertToVector(inputDir);
         Vector newPlayerPosition = playerPosition.add(direction);
         if (isValidMove(newPlayerPosition)) {
@@ -112,7 +115,9 @@ public class GameWorld {
         interactingWorld[(int) pos.getX()][(int) pos.getY()] = tile;
     }
     public static void setTile(Vector pos, TETile tile, TETile[][] world) {
-        world[(int) pos.getX()][(int) pos.getY()] = tile;
+        if (isValidPos(pos, world)) {
+            world[(int) pos.getX()][(int) pos.getY()] = tile;
+        }
     }
     public TETile getTile(Vector pos) {
         return world[(int) pos.getX()][(int) pos.getY()];
@@ -150,6 +155,11 @@ public class GameWorld {
     }
     private int getVertex(Vector pos) {
         return graphMap[(int) pos.getX()][(int) pos.getY()];
+        //return (int) (pos.getX() + pos.getY() * world[0].length);
+    }
+    private int getVertex(int x, int y) {
+        return graphMap[x][y];
+        //return x + y * world[0].length;
     }
     public void generateGraph() {
         /** Generate a graph using the world instance variable
@@ -162,7 +172,8 @@ public class GameWorld {
         for (int i = 0; i < world.length - 1; i++) {
             for (int j = 0; j < world[0].length; j++) {
                 if(shouldConnectTiles(i, j, i + 1, j, false)) {
-                    floorGraphAStar.addEdge(graphMap[i][j], graphMap[i + 1][j]);
+                    //floorGraphAStar.addEdge(graphMap[i][j], graphMap[i + 1][j]);
+                    floorGraphAStar.addEdge(getVertex(i, j), getVertex(i + 1, j));
                 }
             }
         }
@@ -170,12 +181,14 @@ public class GameWorld {
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length - 1; j++) {
                 if(shouldConnectTiles(i, j, i, j + 1, false)) {
-                    floorGraphAStar.addEdge(graphMap[i][j], graphMap[i][j + 1]);
+                    //floorGraphAStar.addEdge(graphMap[i][j], graphMap[i][j + 1]);
+                    floorGraphAStar.addEdge(getVertex(i, j), getVertex(i, j + 1));
                 }
             }
         }
+        System.out.println(floorGraphAStar.E());
     }
-    private int countTiles() {
+    public int countTiles() {
         int graphCount = 0;
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length; j++) {
@@ -190,7 +203,8 @@ public class GameWorld {
         if (includeWalls) {
             return getTile(x1, y1) == Tileset.FLOOR || getTile(x2, y2) == Tileset.FLOOR;
         }
-        return getTile(x1, y1) == Tileset.FLOOR && getTile(x2, y2) == Tileset.FLOOR;
+        return (getTile(x1, y1) == Tileset.FLOOR || getTile(x1, y1) == Tileset.ROOM_FLOOR || getTile(x1, y1) == Tileset.KEY_FLOOR) &&
+                (getTile(x2, y2) == Tileset.FLOOR || getTile(x2, y2) == Tileset.ROOM_FLOOR || getTile(x2, y2) == Tileset.KEY_FLOOR);
     }
     private HashMap<Vector, Double> findVisibleTiles() {
         HashMap<Vector, Double> output = new HashMap<>();
