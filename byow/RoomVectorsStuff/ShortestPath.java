@@ -44,8 +44,8 @@ public class ShortestPath {
         }
     }
 
-    public int getNextMove() {
-        return getPath().get(1);
+    public static int getNextMove(ArrayList<Integer> path) {
+        return path.get(1);
     }
 
     public ArrayList<Integer> getPath() {

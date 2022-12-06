@@ -104,12 +104,11 @@ public class GameWorld {
             setInteractingWorldTile(playerPosition, getTile(playerPosition));
             setInteractingWorldTile(newPlayerPosition, Tileset.AVATAR);
             playerPosition = newPlayerPosition;
-
+            //TODO: Move Goblin here and setInteractivingWorldTile(Goblin...)
             if (Engine.verbose) {
                 System.out.println("DEBUG: Successfully moved " + inputDir);
             }
         }
-
     }
     private void tryPickingUpKey(char input) {
         if (input == 'E') {
@@ -165,11 +164,11 @@ public class GameWorld {
         }
         return new Vector(0, 0);
     }
-    private int getVertex(Vector pos) {
+    public int getVertex(Vector pos) {
         return graphMap[(int) pos.getX()][(int) pos.getY()];
         //return (int) (pos.getX() + pos.getY() * world[0].length);
     }
-    private int getVertex(int x, int y) {
+    public int getVertex(int x, int y) {
         return graphMap[x][y];
         //return x + y * world[0].length;
     }
@@ -247,7 +246,7 @@ public class GameWorld {
             }
         }
     }
-    private boolean monsterLineOfSight(Vector monsterPos) {
+    public boolean monsterLineOfSight(Vector monsterPos) {
         Vector distance = monsterPos.subtract(playerPosition);
         double moveTowards = Math.abs(maxMag(distance.getX(), distance.getY()));
         Vector unitXYVector = distance.scale(1 / moveTowards);
@@ -268,5 +267,21 @@ public class GameWorld {
             return a;
         }
         return b;
+    }
+
+    public Graph getFloorGraphAStar() {
+        return floorGraphAStar;
+    }
+
+    public Vector intToVector(int pos) {
+        return vertexToPos.get(pos);
+    }
+
+    public Vector getPlayerPosition() {
+        return playerPosition;
+    }
+
+    public TETile[][] getFullWorld() {
+        return world;
     }
 }
