@@ -175,7 +175,7 @@ public class GameWorld {
             }
         }
     }
-    private int countTiles() {
+    public int countTiles() {
         int graphCount = 0;
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[0].length; j++) {

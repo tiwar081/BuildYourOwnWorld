@@ -1,10 +1,8 @@
 package byow.RoomVectorsStuff;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.PriorityQueue;
+import java.util.*;
+
 import byow.Core.Engine;
-import java.util.Comparator;
 import edu.princeton.cs.algs4.Graph;
 
 public class ShortestPath {
@@ -39,8 +37,9 @@ public class ShortestPath {
         int currNode = start;
         PQ.add(currNode);
         while (currNode != end) {
+            PQ.remove(currNode);
             relaxOutgoingEdges(currNode);
-            currNode = PQ.remove();
+            currNode = PQ.peek();
         }
     }
 
