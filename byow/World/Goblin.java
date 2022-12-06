@@ -45,7 +45,7 @@ public class Goblin {
         }
         int newPos = ShortestPath.getNextMove(pathToPlayer);
         if (newPos == -1) {
-            return gWorld.getPlayerPosition().subtract(currPos).normalize().add(currPos);
+            return currPos; //gWorld.getPlayerPosition().subtract(currPos).normalize().add(currPos);
         }
         currPos = gWorld.intToVector(newPos);
         return currPos;

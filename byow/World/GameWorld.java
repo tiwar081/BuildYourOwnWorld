@@ -79,6 +79,10 @@ public class GameWorld {
                 Vector path = vertexToPos.get(pos);
                 setTile(path, Tileset.SIGHT, astarworld);
             }
+            setTile(playerPosition, Tileset.AVATAR, astarworld);
+            for (Goblin g:goblins) {
+                setTile(g.getCurrPos(), Tileset.GOBLIN, astarworld);
+            }
             return astarworld;
         }
         TETile[][] smallerWorld = TETile.copyOf(blankWorld);
