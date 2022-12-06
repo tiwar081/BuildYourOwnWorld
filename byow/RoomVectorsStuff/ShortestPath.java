@@ -45,7 +45,12 @@ public class ShortestPath {
     }
 
     public static int getNextMove(ArrayList<Integer> path) {
-        return path.get(1);
+        try {
+            return path.get(1);
+        }
+        catch(Error e) {
+            return -1;
+        }
     }
 
     public ArrayList<Integer> getPath() {

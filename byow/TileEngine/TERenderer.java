@@ -94,13 +94,31 @@ public class TERenderer {
         int numYTiles = world[0].length;
         StdDraw.clear(new Color(41, 46, 73));
         renderHUD(textHUD);
+
+        Color a = new Color(83, 105, 118);
+        Color b = new Color(41, 46, 73);
+
+        Color aWall = Tileset.WALL.getBackgroundColor().darker();
+        Color bWall = Tileset.WALL.getBackgroundColor().darker().darker().darker();
+        TETile coloredTile;
+
         for (int x = 0; x < numXTiles; x += 1) {
             for (int y = 0; y < numYTiles; y += 1) {
                 if (world[x][y] == null) {
                     throw new IllegalArgumentException("Tile at position x=" + x + ", y=" + y
                             + " is null.");
                 }
-                world[x][y].draw(x + xOffset, y + yOffset);
+                if (world[x][y].description().contains("floor")) {
+                    double percent = (double)(x + y)/(numXTiles + numYTiles);
+                    coloredTile = new TETile(gradient(a, b, percent));
+                    coloredTile.draw(x + xOffset, y + yOffset);
+                } else if (world[x][y].getBackgroundColor().equals(Tileset.WALL.getBackgroundColor())){
+                    double percent = (double)(x + y)/(numXTiles + numYTiles);
+                    coloredTile = new TETile(gradient(aWall, bWall, percent));
+                    coloredTile.draw(x + xOffset, y + yOffset);
+                } else {
+                    world[x][y].draw(x + xOffset, y + yOffset);
+                }
             }
         }
         StdDraw.show();

@@ -8,12 +8,15 @@ import byow.RoomVectorsStuff.ShortestPath;
 import byow.RoomVectorsStuff.Vector;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+import byow.World.Goblin;
 
 import java.util.*;
 
 import static byow.RoomVectorsStuff.usefulFuncs.*;
 
 public class GameWorld {
+    private final int numGoblins = 3;
+    private Goblin[] goblins;
     private Vector playerPosition;
     private Vector keyPosition;
     private boolean pickedKeyUp = false;
@@ -28,6 +31,7 @@ public class GameWorld {
     private Graph floorGraphAStar;
     private HashMap<Integer, Vector> vertexToPos = new HashMap<>();
     private boolean viewEntireWorld = false;
+    private boolean viewPath = false;
     private int visionDepth = 5;
     private HashSet<Vector> playerVisibleVectors = new HashSet<>();
     private HashSet<Vector> vectorsToAllTiles = new HashSet<>();
@@ -48,8 +52,8 @@ public class GameWorld {
         graphMap = new int[world.length][world[0].length];
 
         playerInput = input;
-        generatePlayerStartPosition(rand);
         generateGraph();
+        generatePlayerStartPosition(rand);
         generateVisibleVectors();
         floorTiles.add(Tileset.ROOM_FLOOR);
         floorTiles.add(Tileset.FLOOR);
@@ -62,16 +66,18 @@ public class GameWorld {
     }
     private void unlockFinalRoom() {
         addRoomUnlockedDoors(finalRoom, world);
+        addRoomUnlockedDoors(finalRoom, interactingWorld);
     }
     public TETile[][] getWorld() {
-
         if (viewEntireWorld) {
+            if (!viewPath) {
+                return interactingWorld;
+            }
             TETile[][] astarworld = TETile.copyOf(interactingWorld);
             //TODO: MODIFY astarworld
-            ShortestPath sh = new ShortestPath(getVertex(keyPosition), getVertex(playerPosition),   floorGraphAStar);
-            for (int pos:sh.getPath()) {
+            for (int pos:getGoblinPath()) {
                 Vector path = vertexToPos.get(pos);
-                setTile(path, Tileset.FLOWER, astarworld);
+                setTile(path, Tileset.SIGHT, astarworld);
             }
             return astarworld;
         }
@@ -87,16 +93,30 @@ public class GameWorld {
     private void toggleWorldView() {
         viewEntireWorld = !viewEntireWorld;
     }
+    private void togglePathView() {
+        viewPath = !viewPath;
+    }
     public void generatePlayerStartPosition(Random rand) {
         Room playerRoom = roomIterator.next();
         playerPosition = playerRoom.genHallwayTarget(rand);
         setTile(playerPosition, Tileset.AVATAR, interactingWorld);
+        releaseTheGoblins(rand);
     }
-    public void movePlayerIn(char inputDir) {
+
+    public void releaseTheGoblins(Random rand) {
+        goblins = new Goblin[numGoblins];
+        for (int i = 0; i < numGoblins; i++) {
+            goblins[i] = new Goblin(rand, this);
+            setTile(goblins[i].getCurrPos(), Tileset.GOBLIN, interactingWorld);
+        }
+    }
+
+    public boolean movePlayerIn(char inputDir) {
         if (Engine.verbose) {
             System.out.println("DEBUG: Trying to move to " + inputDir);
         }
         tryPickingUpKey(inputDir);
+
         Vector direction = convertToVector(inputDir);
         Vector newPlayerPosition = playerPosition.add(direction);
         if (isValidMove(newPlayerPosition)) {
@@ -104,16 +124,47 @@ public class GameWorld {
             setInteractingWorldTile(playerPosition, getTile(playerPosition));
             setInteractingWorldTile(newPlayerPosition, Tileset.AVATAR);
             playerPosition = newPlayerPosition;
-            //TODO: Move Goblin here and setInteractivingWorldTile(Goblin...)
+            //Moving goblins here
+            for (int i = 0; i < numGoblins; i++) {
+                Vector currPos = goblins[i].getCurrPos();
+                setInteractingWorldTile(currPos, getTile(currPos));
+                Vector newPos = goblins[i].makeNextMove();
+                setInteractingWorldTile(newPos, Tileset.GOBLIN);
+            }
             if (Engine.verbose) {
                 System.out.println("DEBUG: Successfully moved " + inputDir);
             }
         }
+
+        return hasPlayerWon();
+    }
+
+    public boolean yummyYummy() {
+        for (Goblin goblin : goblins) {
+            if (goblin.getCurrPos().equals(playerPosition)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasPlayerWon() {
+        if (pickedKeyUp) {
+            if (playerPosition.getX() >= finalRoom.xLeft() &&
+                    playerPosition.getX() <= finalRoom.xRight() &&
+                    playerPosition.getY() >= finalRoom.yBottom() &&
+                    playerPosition.getY() <= finalRoom.yTop()) {
+                return true;
+            }
+        }
+        return false;
     }
     private void tryPickingUpKey(char input) {
         if (input == 'E') {
             if (playerPosition.equals(keyPosition)) {
                 setInteractingWorldTile(playerPosition, Tileset.NO_KEY_FLOOR);
+                setTile(playerPosition, Tileset.NO_KEY_FLOOR, world);
+                setTile(playerPosition, Tileset.AVATAR, interactingWorld);
                 pickedKeyUp = true;
                 unlockFinalRoom();
             }
@@ -161,6 +212,9 @@ public class GameWorld {
                 return new Vector(-1, 0);
             case 'T':
                 toggleWorldView();
+                break;
+            case 'F':
+                togglePathView();
         }
         return new Vector(0, 0);
     }
@@ -214,8 +268,8 @@ public class GameWorld {
         if (includeWalls) {
             return getTile(x1, y1) == Tileset.FLOOR || getTile(x2, y2) == Tileset.FLOOR;
         }
-        return (getTile(x1, y1) == Tileset.FLOOR || getTile(x1, y1) == Tileset.ROOM_FLOOR || getTile(x1, y1) == Tileset.KEY_FLOOR) &&
-                (getTile(x2, y2) == Tileset.FLOOR || getTile(x2, y2) == Tileset.ROOM_FLOOR || getTile(x2, y2) == Tileset.KEY_FLOOR);
+        return (getTile(x1, y1) == Tileset.FLOOR || getTile(x1, y1) == Tileset.ROOM_FLOOR || getTile(x1, y1) == Tileset.KEY_FLOOR || getTile(x1, y1) == Tileset.LOCKED_DOOR || getTile(x1, y1) == Tileset.GOLDEN_FLOOR || getTile(x1, y1) == Tileset.NO_KEY_FLOOR || getTile(x1, y1) == Tileset.UNLOCKED_DOOR) &&
+                (getTile(x2, y2) == Tileset.FLOOR || getTile(x2, y2) == Tileset.ROOM_FLOOR || getTile(x2, y2) == Tileset.KEY_FLOOR || getTile(x2, y2) == Tileset.LOCKED_DOOR || getTile(x2, y2) == Tileset.GOLDEN_FLOOR || getTile(x2, y2) == Tileset.NO_KEY_FLOOR || getTile(x2, y2) == Tileset.UNLOCKED_DOOR);
     }
     private HashMap<Vector, Double> findVisibleTiles() {
         HashMap<Vector, Double> output = new HashMap<>();
@@ -283,5 +337,17 @@ public class GameWorld {
 
     public TETile[][] getFullWorld() {
         return world;
+    }
+
+    public HashSet<Integer> getGoblinPath() {
+        HashSet<Integer> sight = new HashSet<>();
+        for (Goblin goblin : goblins) {
+            sight.addAll(goblin.getPathToPlayer());
+        }
+        return sight;
+    }
+
+    public Iterator<Room> getRoomIterator() {
+        return roomIterator;
     }
 }

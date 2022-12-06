@@ -1,5 +1,6 @@
 package byow.World;
 
+import byow.Core.RandomUtils;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import byow.RoomVectorsStuff.*;
@@ -10,29 +11,43 @@ import java.util.Random;
 import static byow.RoomVectorsStuff.usefulFuncs.isValidPos;
 
 public class Goblin {
-    Vector currPos;
-    Random rand;
-    GameWorld gWorld;
-    Graph graph;
+    private double confusionProbability = 0.5;
+    private static Vector[] moves = {new Vector(0, 1), new Vector(-1, 0), new Vector(1, 0), new Vector(0, -1)};
+    private Vector currPos;
+    private Random rand;
+    private GameWorld gWorld;
+    private Graph graph;
 
     ArrayList<Integer> pathToPlayer;
     public Goblin(Random r, GameWorld g) {
         rand = r;
         gWorld = g;
         graph = g.getFloorGraphAStar();
-        //TODO: set currPos to start
+
+        Room goblinRoom = gWorld.getRoomIterator().next();
+        currPos = goblinRoom.genHallwayTarget(rand);
+
+        updatePath();
     }
 
     public Vector makeNextMove() {
         //Goblin should make a random movement every second move when player isn't in line of sight. Else, along path.
+        updatePath();
         if (playerInSight()) {
-            if (rand.nextBoolean()) {
-                //TODO: Make a random move
-
+            double probability = RandomUtils.uniform(rand, 0, 1);
+            if (probability > 1 - confusionProbability) {
+                Vector temp = currPos.add(moves[rand.nextInt(4)]);
+                if (isValidMove(temp)) {
+                    currPos = temp;
+                    return currPos;
+                }
             }
-        } else {
-            currPos = gWorld.intToVector(ShortestPath.getNextMove(pathToPlayer));
         }
+        int newPos = ShortestPath.getNextMove(pathToPlayer);
+        if (newPos == -1) {
+            return gWorld.getPlayerPosition().subtract(currPos).normalize().add(currPos);
+        }
+        currPos = gWorld.intToVector(newPos);
         return currPos;
     }
 
@@ -50,5 +65,13 @@ public class Goblin {
 
     private void updatePath() {
         pathToPlayer = (new ShortestPath(gWorld.getVertex(currPos), gWorld.getVertex(playerPos()), graph)).getPath();
+    }
+
+    public Vector getCurrPos() {
+        return currPos;
+    }
+
+    public ArrayList<Integer> getPathToPlayer() {
+        return pathToPlayer;
     }
 }
