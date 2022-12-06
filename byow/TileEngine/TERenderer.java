@@ -117,7 +117,6 @@ public class TERenderer {
             for (int y = 0; y < numYTiles; y += 1) {
                 double percent = (double)(x + y)/(numXTiles + numYTiles);
                 coloredTile = new TETile(gradient(a, b, percent));
-                System.out.println(percent);
                 coloredTile.draw(x + xOffset, y + yOffset);
             }
         }

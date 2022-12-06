@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import byow.Core.Engine;
+import edu.princeton.cs.algs4.In;
+
 import java.util.Comparator;
-import edu.princeton.cs.algs4.Graph;
 
 public class ShortestPath {
     private HashMap<Integer, Integer> predecessorEdge;
@@ -34,31 +35,41 @@ public class ShortestPath {
         distTo.put(start, 0.0);
 
         PQComparator C =  new PQComparator(distTo, end);
-        PQ = new PriorityQueue<Integer>(100, C);
+        PQ = new PriorityQueue<Integer>(C);
 
         int currNode = start;
         PQ.add(currNode);
-        while (currNode != end) {
+        while (currNode != end ) {
+            PQ.remove(currNode);
             relaxOutgoingEdges(currNode);
-            currNode = PQ.remove();
+            currNode = PQ.peek();
         }
     }
 
-    public Vector getNextMove() {
+    public int getNextMove() {
         return getPath().get(1);
     }
 
-    public ArrayList<Vector> getPath() {
+    public ArrayList<Integer> getPath() {
         int currnode = end;
-        ArrayList<Vector> path = new ArrayList<>();
+        ArrayList<Integer> path = new ArrayList<>();
 
         while(currnode != start) {
-            path.add(0, usefulFuncs.intToVector(currnode));
+            path.add(0, currnode);
             currnode = predecessorEdge.get(currnode);
         }
 
         return path;
     }
+    public ArrayList<Vector> getConsideredVertices() {
+        int currnode = end;
+        ArrayList<Vector> path = new ArrayList<>();
+
+
+
+        return path;
+    }
+
 
     private static void reinsertPQElem(PriorityQueue<Integer> PQ, Integer v) {
         PQ.remove(v);
@@ -67,6 +78,7 @@ public class ShortestPath {
 
     //Switches/adds distTo[w] and edgeTo[w]
     private void relaxOutgoingEdges(int v) {
+        System.out.println(World.adj(v));
         for (int w : World.adj(v)) {
             if (Marked.get(w)) {
                 if (distTo.get(w) > distTo.get(v) + 1.0) {
@@ -75,10 +87,10 @@ public class ShortestPath {
                     reinsertPQElem(PQ, w);
                 }
             } else {
-                Marked.put(w, true);
                 predecessorEdge.put(w, v);
                 distTo.put(w, distTo.get(v) + 1.0);
                 PQ.add(w);
+                Marked.put(w, true);
             }
         }
     }
