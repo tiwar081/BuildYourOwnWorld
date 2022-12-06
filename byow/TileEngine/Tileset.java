@@ -34,6 +34,8 @@ public class Tileset {
             "golden floor");
     public static final TETile KEY_FLOOR = new TETile('K', Color.orange.brighter(), Color.orange.darker(),
             "key");
+    public static final TETile NO_KEY_FLOOR = new TETile(' ', Color.orange.brighter(), Color.orange.darker(),
+            "no key");
     public static final TETile UNLOCKED_DOOR = new TETile('▢', Color.orange, Color.black,
             "unlocked door");
     public static final TETile SAND = new TETile('▒', Color.yellow, Color.black, "sand");

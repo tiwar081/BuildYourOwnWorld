@@ -15,17 +15,17 @@ import static byow.RoomVectorsStuff.HallwaysFuncs.*;
 public class Engine {
     TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 80;
-    public static final int HEIGHT = 75;
+    public static final int WIDTH = 60;
+    public static final int HEIGHT = 55;
     public static final int yOffSet = 2;
-    public static final int MAX_ROOMS = 50;
+    public static final int MAX_ROOMS = 30;
     public static final int ROOM_ATTEMPTS = 5;
     public static final int MIN_ROOM_SIZE = 1;
     public static final int MAX_ROOM_SIZE = 5;
     public static final int EXTRA_HALLWAYS = 0;
     public static final boolean verbose = false;
     public static final char[] validSeedLetters = "sSnNlLRrqQ1234567890".toCharArray();
-    public static final char[] validLetters = "aAwWsSdDtT:rR".toCharArray();
+    public static final char[] validLetters = "aAwWsSdDtT:rReE".toCharArray();
     public static final char[] terminalSeedLetters = "sSlLqQrR".toCharArray();
     public static final char terminalLetter = 'Q';
     public HashSet<Character> validSeedLettersSet = new HashSet<>();

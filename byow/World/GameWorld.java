@@ -16,6 +16,7 @@ import static byow.RoomVectorsStuff.usefulFuncs.*;
 public class GameWorld {
     private Vector playerPosition;
     private Vector keyPosition;
+    private boolean pickedKeyUp = false;
     private String playerInput;
     private Collection<Room> allRooms;
     private Iterator<Room> roomIterator;
@@ -95,6 +96,7 @@ public class GameWorld {
         if (Engine.verbose) {
             System.out.println("DEBUG: Trying to move to " + inputDir);
         }
+        tryPickingUpKey(inputDir);
         Vector direction = convertToVector(inputDir);
         Vector newPlayerPosition = playerPosition.add(direction);
         if (isValidMove(newPlayerPosition)) {
@@ -102,11 +104,21 @@ public class GameWorld {
             setInteractingWorldTile(playerPosition, getTile(playerPosition));
             setInteractingWorldTile(newPlayerPosition, Tileset.AVATAR);
             playerPosition = newPlayerPosition;
+
             if (Engine.verbose) {
                 System.out.println("DEBUG: Successfully moved " + inputDir);
             }
         }
 
+    }
+    private void tryPickingUpKey(char input) {
+        if (input == 'E') {
+            if (playerPosition.equals(keyPosition)) {
+                setInteractingWorldTile(playerPosition, Tileset.NO_KEY_FLOOR);
+                pickedKeyUp = true;
+                unlockFinalRoom();
+            }
+        }
     }
     private boolean isValidMove(Vector pos) {
         return !playerPosition.equals(pos) && isValidPos(pos, world) && !getTile(pos).isBlocksPlayer();
