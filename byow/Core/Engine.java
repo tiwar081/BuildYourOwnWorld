@@ -149,7 +149,6 @@ public class Engine {
                 curr_room = new Room(pos[0], pos[1], room_dim[0], room_dim[1]);
                 if (!curr_room.overlapsWith(disconnectedRooms)) {
                     disconnectedRooms.add(curr_room);
-                    System.out.println(curr_room.xLeft() + " " + curr_room.yBottom());
                     break;
                 }
             }
