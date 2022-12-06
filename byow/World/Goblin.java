@@ -11,7 +11,7 @@ import java.util.Random;
 import static byow.RoomVectorsStuff.usefulFuncs.isValidPos;
 
 public class Goblin {
-    private double confusionProbability = 0.5;
+    private double confusionProbability = 1;
     private static Vector[] moves = {new Vector(0, 1), new Vector(-1, 0), new Vector(1, 0), new Vector(0, -1)};
     private Vector currPos;
     private Random rand;
@@ -33,14 +33,14 @@ public class Goblin {
     public Vector makeNextMove() {
         //Goblin should make a random movement every second move when player isn't in line of sight. Else, along path.
         updatePath();
-        if (playerInSight()) {
+        if (!playerInSight()) {
             double probability = RandomUtils.uniform(rand, 0, 1);
-            if (probability > 1 - confusionProbability) {
+            if (probability > (1 - confusionProbability)) {
                 Vector temp = currPos.add(moves[rand.nextInt(4)]);
                 if (isValidMove(temp)) {
                     currPos = temp;
-                    return currPos;
                 }
+                return currPos;
             }
         }
         int newPos = ShortestPath.getNextMove(pathToPlayer);
